@@ -1,0 +1,34 @@
+$hiki-background-color: #15202b;
+$hiki-divider-color: rgb(56, 68, 77);
+$hiki-tertiary-color: #8899A6;
+$hiki-tertiary-background-color: rgb(21, 24, 28);
+$hiki-mention-color: rgb(27, 149, 224);
+$hiki-text-color: white;
+
+$toolbar-content-padding-x: 0;
+
+$material-dark: (
+  'background': $hiki-background-color,
+  'cards': $hiki-background-color,
+  'app-bar': $hiki-background-color,
+  'navigation-drawer': $hiki-background-color,
+  'text': (
+      'primary': $hiki-text-color,
+      'secondary': $hiki-text-color
+  ),
+  'dividers': $hiki-divider-color,
+  'input-bottom-line': $hiki-divider-color
+);
+
+$material-light: (
+  'background': $hiki-background-color,
+  'cards': $hiki-background-color,
+  'app-bar': $hiki-background-color,
+  'navigation-drawer': $hiki-background-color,
+  'text': (
+      'primary': $hiki-text-color,
+      'secondary': $hiki-text-color
+  ),
+  'dividers': $hiki-divider-color,
+  'input-bottom-line': $hiki-divider-color
+);
