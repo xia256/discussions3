@@ -24,6 +24,4 @@ pnpm-debug.log*
 
 # Special files
 *.secret.json
-/src/server/api/config.json
-/src/server/api/gateways.json
 /src/scripts/*

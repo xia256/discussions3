@@ -4,7 +4,8 @@ import { delay } from "../utility";
 
 (async function () {
     const queue = [
-        { name: `s`, cmd: `npm run ${argv.server}` }
+        { name: `server`, cmd: `npm run ${argv.server}` },
+        //{ name: `truth`, cmd: `npm run truth` }
     ];
 
     for (; ;) {
