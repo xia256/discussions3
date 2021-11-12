@@ -1,4 +1,4 @@
-# Discussiosn 3.0
+# Discussions 3.0
 
 ## Client setup
 ```
