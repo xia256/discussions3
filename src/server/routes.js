@@ -10,6 +10,10 @@ export default [
         name: "standalonecard"
     },
     {
+        path: '/console',
+        component: 'ConsolePage',
+    },
+    {
         path: '/popup',
         component: 'Popup'
     },

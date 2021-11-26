@@ -142,7 +142,7 @@ export default {
         limit: this.limit,
       });
 
-      console.log(results);
+      //console.log(results);
 
       return {
         cursorId,
