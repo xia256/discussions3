@@ -128,7 +128,11 @@ export default {
       this.neutralEngagement = settings.neutralEngagement;
       this.likeNotifications = settings.likeNotifications ?? true;
       this.blockedTags = Array.from(settings.blockedTags ?? []);
-      this.discView = settings.discView;
+      if(settings.discView == "Classic"){
+        this.discView = false;
+      }else{
+        this.discView = true;
+      }
 
       console.log(settings.blockedTags);
     },

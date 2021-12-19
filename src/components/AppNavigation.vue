@@ -371,7 +371,10 @@ export default {
   },
   watch: {},
   async created() {},
-  async mounted() {},
+  async mounted() {
+    //Load the Settings to prevent reset.
+    this.setSettings();
+  },
   async beforeDestroy() {},
   methods: {
     textSearch() {
@@ -390,6 +393,7 @@ export default {
       this.neutralEngagement = settings.neutralEngagement;
       this.likeNotifications = settings.likeNotifications ?? true;
       this.blockedTags = Array.from(settings.blockedTags ?? []);
+      this.discView = settings.discView;
 
       console.log(settings.blockedTags);
     },
