@@ -40,6 +40,9 @@
     <MentionListPopover ref="mentionList" />
     <ProfilePopover />
 
+    <!--%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%%%%%%%%%%%%%%%    MAIN APP CONTENT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%-->
     <v-main>
       <v-container
         fluid
@@ -58,6 +61,7 @@
               style="position: sticky; top: 64px"
             >
               <div :style="layoutLeftStyle">
+                <!--Left side menu for the app navigation with config.-->
                 <AppNavigation :icon-only="isMDPI" />
               </div>
             </div>
@@ -68,12 +72,22 @@
           >
             <v-row no-gutters>
               <v-col :style="layoutMiddleStyle">
+                <!--%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                This is what loads the content of the blockchain.
+                %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%-->
                 <router-view v-show="serverConnected" />
+                
               </v-col>
               <v-col v-show="layout.showRight">
                 <div style="position: sticky; top: 64px">
                   <div :style="layoutRightStyle">
+                    <!--
+                    This section loads the YOU MIGHT LIKE AND TRENDING ELEMENTS. I think it
+                    could benefit from connecting Discussions to an RSS feed or similar to keep
+                    the users interested when things are slow. Otherwise it doesn't serve much of
+                    a purpose yet.
                     <AppRightContent />
+                    -->
                   </div>
                 </div>
               </v-col>
@@ -82,6 +96,7 @@
         </v-row>
       </v-container>
     </v-main>
+    
   </v-app>
 </template>
 
@@ -158,7 +173,7 @@ import mixins from "./mixins";
 
 import AppBar from "./components/AppBar";
 import AppNavigation from "./components/AppNavigation";
-import AppRightContent from "./components/AppRightContent";
+//import AppRightContent from "./components/AppRightContent";
 
 import LoginDialog from "./components/dialogs/LoginDialog";
 import ThreadDialog from "./components/dialogs/ThreadDialog";
@@ -177,7 +192,7 @@ export default {
   components: {
     AppBar,
     AppNavigation,
-    AppRightContent,
+    //AppRightContent,
     //
     // dialogs
     //
@@ -208,6 +223,7 @@ export default {
   watch: {
     $route() {
       if (!this.isMobile) {
+        //Watches the layout in case of Desktop app.
         this.layout.showRight = this.$route.meta?.hideRight ? false : true;
       }
     },
@@ -251,8 +267,10 @@ export default {
     api.addEventListener("directMessage", this.receiveDirectMessage);
 
     if (api.isReady) {
+      //Verify if the server is online, otherwise...
       this.serverConnected = true;
     } else {
+      //Wait for the app to get online.
       await api.connect();
     }
   },

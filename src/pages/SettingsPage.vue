@@ -25,6 +25,14 @@
         :label="`Like Notifications`"
         :help="`Choose whether likes trigger notifications.`"
       />
+
+      <!--DiscView from settings. Indicates how one wants to view Discussions. Currently only switches betweem Classic and Light view. To add a better control that displays Imageboard view.-->
+      <Switch2
+        v-model="discView"
+        :label="`Posts View (Classic/Light)`"
+        :help="`Choose if you want a Classic Posts View or a Light posts experience.`"
+      />
+
     </v-col>
     <v-col :cols="12">
       <v-combobox
@@ -78,6 +86,7 @@ export default {
     neutralEngagement: false,
     likeNotifications: true,
     blockedTags: [],
+    discView: false,
   }),
   computed: {},
   watch: {
@@ -96,6 +105,9 @@ export default {
     blockedTags() {
       this.updateSettings();
     },
+    discView(){
+      this.updateSettings();
+    }
   },
   async created() {},
   async mounted() {
@@ -116,6 +128,7 @@ export default {
       this.neutralEngagement = settings.neutralEngagement;
       this.likeNotifications = settings.likeNotifications ?? true;
       this.blockedTags = Array.from(settings.blockedTags ?? []);
+      this.discView = settings.discView;
 
       console.log(settings.blockedTags);
     },
@@ -124,6 +137,14 @@ export default {
       const blurNsfw = this.blurNsfw;
       const neutralEngagement = this.neutralEngagement;
       const likeNotifications = this.likeNotifications;
+      let discussionsView = "Classic";
+      if(!this.discView){
+        discussionsView = "Classic";
+        console.log("Classic View activated");
+      }else{
+        discussionsView = "Light";
+        console.log("Light View activated");
+      }
 
       let blockedTags = this.blockedTags;
       for (let i = 0; i < blockedTags.length; i++) {
@@ -138,6 +159,7 @@ export default {
         neutralEngagement,
         likeNotifications,
         blockedTags,
+        discussionsView,
       };
 
       this.$store.commit("set", ["settings", settings]);

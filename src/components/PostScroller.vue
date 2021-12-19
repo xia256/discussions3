@@ -15,6 +15,7 @@
       ref="cursor"
       :advance-cursor="advanceCursorInternal"
     >
+
       <template v-slot:content="{ items }">
         <v-row
           v-for="(post, i) in items"
@@ -22,17 +23,79 @@
           no-gutters
         >
           <v-col :cols="12">
-            <Post
-              class="mb-2"
-              flat
-              outlined
-              :max-replies="2"
-              :post="post.replyContext ? post.replyContext : post"
-              :force-override-block="forceOverrideBlock"
-            />
+            <!--%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+            %%%%%%%% MODIFIED HERE FOR VIEWS %%%%%%%
+            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%-->
+            <div v-if="settings.view == 'Classic'">
+                <!--%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                %%%% IMPORTANT - THIS LOADS THE POSTS %%%
+                %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%-->
+                <Post
+                  class="mb-2"
+                  flat
+                  outlined
+                  :max-replies="2"
+                  :post="post.replyContext ? post.replyContext : post"
+                  :force-override-block="forceOverrideBlock"
+                />
+
+            </div>
+
+            <!--%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%-->
+            <!--This will load the Reddit like view-->
+            <!--%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%-->
+            <div v-if="settings.view == 'Light'">
+                <v-col :cols="12">
+                  <div class="container">
+                      <div class="left">
+                         <v-btn
+                            text
+                            small
+                            dense
+                            class="pa-0"
+                            :color="post.isLiked ? 'red' : 'tertiary'"
+                            @click="likePost"
+                          >
+                            <v-icon>mdi-heart-outline</v-icon>
+                            <span v-if="!settings.neutralEngagement">{{
+                              post.totalLikes
+                            }}</span>
+                          </v-btn>
+
+                          <!--Show the number of upvotes-->
+                          {{ post.totalReplies }}
+
+                      </div>
+
+                      <div class="right">
+
+                          <!--Show if post has been tipped-->
+                          <div v-if="post.tips.length > 0" class="mb-1">
+                            <PostTips :tips="post.tips" />
+                          </div>
+
+                          <!--Show post title or content-->
+                          <div @click="openThread(post)">
+                              <h4 v-if="post.title">{{ post.title }}</h4>
+                              <!--TODO: Load only the excerpt from the post.content here if there's no title-->
+                              <h4 v-if="!post.title">POST CONTENT</h4>
+                          </div>
+
+                          <!--Show username of the poster-->
+                          <span>@{{ post.username }}</span>
+
+                      </div>
+                  </div>
+                </v-col>
+            </div>
+
+
+
+
           </v-col>
         </v-row>
       </template>
+
     </SearchCursor>
   </div>
 </template>
@@ -45,9 +108,16 @@ import { PostObject } from "../server/api/objects";
 
 //import { delay } from "../utility";
 
+//Action Commitment for the likePost utility.
+import { getActionCommitment } from "../utility";
+import PostTips from "./PostTips";
+
 import SearchCursor from "../components/SearchCursor";
 import Post from "../components/Post";
 import PostSubmitter from "../components/PostSubmitter";
+
+//Server API to make calls to the backend.
+import api from "../server/api";
 
 export default {
   name: "PostScroller",
@@ -55,6 +125,7 @@ export default {
     SearchCursor,
     Post,
     PostSubmitter,
+    PostTips,
   },
   mixins: [mixins.Common, mixins.SubmitPost],
   props: {
@@ -141,7 +212,59 @@ export default {
 
         return { cursorId, results: append };
       });
-    }
+    },
+
+    //Function to like a published post without having to open it.
+    async likePost() {
+      if (this.requireLoginDialog()) return;
+      if (this.waiting) return;
+                                                                                 
+      const identityKey = this.keyManager.keys["identity"];
+      if (this.post.identityPublicKey == identityKey.pub && this.post.isLiked)
+        return;
+                                                                                 
+      await this.wait(async () => {
+        const inverted = this.post.isLiked ? false : true;
+                                                                                 
+        // be optimistic about this and set it before signing and api call
+        this.post.isLiked = inverted;
+        this.post.totalLikes += inverted ? 1 : -1;
+                                                                                 
+        const args = {
+          identityPublicKey: identityKey.pub,
+          postId: this.post.id,
+          value: inverted,
+          nonce: Date.now(),
+        };
+                                                                                 
+        const commitment = await getActionCommitment({ name: "like", ...args });
+        const signature = await identityKey.signText(commitment);
+                                                                                 
+        await api.Action.likePost({
+          signature,
+          ...args,
+        });
+      });
+    },
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   },
 };
 </script>
