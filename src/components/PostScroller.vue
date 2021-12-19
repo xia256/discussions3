@@ -84,13 +84,13 @@
                           <!--Show username of the poster-->
                           <span>@{{ post.username }}</span>
 
+                          <!--TODO: Find how to process the date without needing another component-->
+                          <span>{{ post.updatedAt }}</span>
+
                       </div>
                   </div>
                 </v-col>
             </div>
-
-
-
 
           </v-col>
         </v-row>
@@ -129,6 +129,7 @@ export default {
   },
   mixins: [mixins.Common, mixins.SubmitPost],
   props: {
+    post: { type: PostObject, default: null },
     advanceCursor: { type: Function, required: true },
     noSubmitter: { type: Boolean, default: false },
     forceOverrideBlock: { type: Boolean, default: false },

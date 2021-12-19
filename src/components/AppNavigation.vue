@@ -313,6 +313,7 @@
         </v-list-item>
         <!--%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%-->
 
+        <!--Dialog box to submit a new post-->
         <v-list-item
           v-if="isLoggedIn"
           class="mt-4"
