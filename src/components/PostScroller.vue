@@ -65,6 +65,12 @@
                           <!--Show the number of upvotes-->
                           {{ post.totalReplies }}
 
+                          <!--Add image and video thumbnails-->
+                          <!--TODO: Fix this by finding some way to load the thumbnail from the server.-->
+                          <div v-if="0 === 1">
+                            <PostImgThumb :post="post.replyContext ? post.replyContext : post"></PostImgThumb>
+                          </div>
+
                       </div>
 
                       <div class="right">
@@ -82,6 +88,9 @@
                                 <!--This control loads a small excerpt from a post without starting header/title.-->
                                 <PostThumb :post="post.replyContext ? post.replyContext : post"></PostThumb>
                               </h4>
+                              <!--Display what community the post belongs to-->
+
+                              <PostCommunity :post="post.replyContext ? post.replyContext : post"></PostCommunity>
                           </div>
 
                           <!--Show username of the poster-->
@@ -123,6 +132,10 @@ import PostSubmitter from "../components/PostSubmitter";
 import PostDate from "../components/PostDate";
 //Import to load partial content from the text in case there's no title.
 import PostThumb from "../components/PostThumb.vue";
+//Import to load Image Thumbnail for those that have it.
+import PostImgThumb from "../components/PostImgThumb.vue";
+//Import to load Community link.
+import PostCommunity from "../components/PostCommunity.vue";
 
 //Server API to make calls to the backend.
 import api from "../server/api";
@@ -136,6 +149,8 @@ export default {
     PostTips,
     PostDate,
     PostThumb,
+    PostImgThumb,
+    PostCommunity,
   },
   mixins: [mixins.Common, mixins.SubmitPost],
   props: {

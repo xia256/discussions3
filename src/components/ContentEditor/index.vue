@@ -4,7 +4,6 @@
     class="post-editor"
   >
 
-  <h1>Rem is best girl</h1>
     <v-card-text class="pr-0 pl-0">
       <div class="post-editor-toolbar">
         <v-btn
