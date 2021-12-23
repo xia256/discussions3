@@ -78,14 +78,17 @@
                           <div @click="openThread(post)">
                               <h4 v-if="post.title">{{ post.title }}</h4>
                               <!--TODO: Load only the excerpt from the post.content here if there's no title-->
-                              <h4 v-if="!post.title">POST CONTENT</h4>
+                              <h4 v-if="!post.title">
+                                <!--This control loads a small excerpt from a post without starting header/title.-->
+                                <PostThumb :post="post.replyContext ? post.replyContext : post"></PostThumb>
+                              </h4>
                           </div>
 
                           <!--Show username of the poster-->
                           <span>@{{ post.username }}</span>
-
-                          <!--TODO: Find how to process the date without needing another component-->
-                          <span>{{ post.updatedAt }}</span>
+                          <span>
+                            <PostDate :post="post.replyContext ? post.replyContext : post"></PostDate>
+                          </span>
 
                       </div>
                   </div>
@@ -116,6 +119,11 @@ import SearchCursor from "../components/SearchCursor";
 import Post from "../components/Post";
 import PostSubmitter from "../components/PostSubmitter";
 
+//Import to get short Post Date.
+import PostDate from "../components/PostDate";
+//Import to load partial content from the text in case there's no title.
+import PostThumb from "../components/PostThumb.vue";
+
 //Server API to make calls to the backend.
 import api from "../server/api";
 
@@ -126,6 +134,8 @@ export default {
     Post,
     PostSubmitter,
     PostTips,
+    PostDate,
+    PostThumb,
   },
   mixins: [mixins.Common, mixins.SubmitPost],
   props: {

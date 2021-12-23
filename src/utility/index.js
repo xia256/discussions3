@@ -139,6 +139,57 @@ function sanitizeHTML(html, { allowedTags } = { allowedTags: [] }) {
     });
 }
 
+//Helper function similar to sanitizeHTML but without the images and other tags that take too much space.
+function thumbHTML(html, { allowedTags } = { allowedTags: [] }) {
+
+    // guard against characters that have jank rendering
+    // note: this was commented out since we now guard using overflow hidden
+    //html = html.replace(/([\u0300-\u036F]|[\uD800-\uDFFF]|[\u1E00-\u1EFF]|[\u2300-\u23FF]|[\u0E00-\u0E7F])+/g, ' ');
+
+    return _sanitizeHTML(html, {
+        allowedTags: [
+            "h1",
+            "h2",
+            "h3",
+            "h4",
+            "h5",
+            "h6",
+            "blockquote",
+            "p",
+            "span",
+            "nl",
+            "b",
+            "i",
+            "s",
+            "strong",
+            "em",
+            "strike",
+            "center",
+            "hr",
+            "br",
+            "tr",
+            "th",
+            "td",
+            "pre",
+            ...allowedTags
+        ],
+        //allowVulnerableTags: true,
+        allowedAttributes: {
+            ..._sanitizeHTML.defaults.allowedAttributes,
+            span: ["data-value", "data-denotation-char", "class"],
+            a: ["class", "data-denotation-char", "href", "target"],
+            blockquote: ["class"],
+            div: [
+                "data-hiki-oembed",
+                "class",
+                "data-embed-media", "data-embed-parent", "data-embed-live", "data-embed-uuid", "data-embed-created"
+            ],
+            iframe: ["width", "height", "src", "frameborder", "allow", "allowfullscreen"],
+            //script: ["async", "src", "charset"]
+        },
+    });
+}
+
 function isVisible($el) {
     return ($el.offsetWidth + $el.offsetHeight) > 0;
 }
@@ -251,6 +302,7 @@ export {
     createDOMParser,
     parseDocument,
     sanitizeHTML,
+    thumbHTML,
     isVisible,
     getActionCommitment,
     tryParseJson,
