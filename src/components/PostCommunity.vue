@@ -10,7 +10,7 @@
     class="d-inline-block mr-2 font-weight-bold text-decoration-none"
     :to="{
       name: 'viewcommunity',
-      params: { communityName: post.community },
+      params: { communityName: postCommunity },
     }"
   >
   <div v-bind="$attrs"        
@@ -30,10 +30,18 @@ export default {
     post: { type: PostObject, default: null},
   },
   computed: {
+    //Allows to extract the Community the post belongs to. Defaults to blog otherwise.
     postCommunity(){
       const community = sanitizeHTML(this.post.content);
-      console.log(community);
-      return community;
+//      console.log(community.match('href="/c/([^"]*)')[1]);
+
+      //Regexp the value to extract the community from the post if it exists, otherwise default it to blog.
+      if(community.match('href="/c/([^"]*)')){
+//        console.log(community.match('href="/c/([^"]*)'));
+        return community.match('href="/c/([^"]*)')[1];
+      }else {
+        return "blog"
+      }
     }
   }
 }
