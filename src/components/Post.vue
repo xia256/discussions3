@@ -53,8 +53,9 @@
           </v-row>
           <v-row v-show="!isBlocked" no-gutters>
                 <v-col :cols="12">
-                  <!--User Avatar gets shown here-->
-                  <div class="mb-1">
+                  <div class="container">
+                  <!--User Avatar gets shown heremb-1-->
+                  <div class="left">
                     <Avatar
                       v-if="!noAvatar"
                       class="d-inline mr-2"
@@ -82,6 +83,14 @@
                     >
                       <span>@{{ post.username }}</span>
                     </router-link>
+
+
+
+
+
+
+
+
 
                     <v-tooltip right>
                       <template v-slot:activator="{ on, attrs }">
@@ -111,6 +120,18 @@
                     >
 
                   </div>
+
+                      <!--Display what community the post belongs to-->
+
+                    <div class="right">
+                      <PostCommunity :post="post.replyContext ? post.replyContext : post"></PostCommunity>
+
+
+
+                    </div>
+                  </div>
+
+
                   <div v-if="post.tips.length > 0" class="mb-1">
                     <PostTips :tips="post.tips" />
                   </div>
@@ -131,6 +152,14 @@
                       </v-row>
                     </div>
                     <div v-else>
+
+
+
+
+
+
+
+
                       <!--%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                       %%%%This loads the post content ensuring it has been sanitized.%%%
                       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%-->
@@ -386,11 +415,11 @@
 }
 
 .left {
-  width: 30%;
+  width: 50%;
 }
 
 .right {
-  width: 70%;
+  width: 40%;
 }
 
 .post--embedded {
@@ -524,6 +553,8 @@ import Avatar from "./Avatar";
 import SanitizedHtml from "./SanitizedHtml";
 import PostSubmitter from "./PostSubmitter";
 import PostTips from "./PostTips";
+//Import to load Community link.
+import PostCommunity from "../components/PostCommunity.vue";
 
 export default {
   name: "Post",
@@ -532,6 +563,7 @@ export default {
     SanitizedHtml,
     PostSubmitter,
     PostTips,
+    PostCommunity,
   },
   mixins: [mixins.Common],
   props: {

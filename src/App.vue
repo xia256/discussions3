@@ -81,13 +81,13 @@
               <v-col v-show="layout.showRight">
                 <div style="position: sticky; top: 64px">
                   <div :style="layoutRightStyle">
-                    <!--
-                    This section loads the YOU MIGHT LIKE AND TRENDING ELEMENTS. I think it
+
+                    <!--This section loads the YOU MIGHT LIKE AND TRENDING ELEMENTS. I think it
                     could benefit from connecting Discussions to an RSS feed or similar to keep
                     the users interested when things are slow. Otherwise it doesn't serve much of
-                    a purpose yet.
+                    a purpose yet.-->
                     <AppRightContent />
-                    -->
+
                   </div>
                 </div>
               </v-col>
@@ -173,7 +173,7 @@ import mixins from "./mixins";
 
 import AppBar from "./components/AppBar";
 import AppNavigation from "./components/AppNavigation";
-//import AppRightContent from "./components/AppRightContent";
+import AppRightContent from "./components/AppRightContent";
 
 import LoginDialog from "./components/dialogs/LoginDialog";
 import ThreadDialog from "./components/dialogs/ThreadDialog";
@@ -192,7 +192,7 @@ export default {
   components: {
     AppBar,
     AppNavigation,
-    //AppRightContent,
+    AppRightContent,
     //
     // dialogs
     //

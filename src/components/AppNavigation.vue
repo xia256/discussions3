@@ -365,7 +365,7 @@ export default {
     //Classic = Twitter like.
     //Light = Reddit like.
     //Imageboard = 4chan like.
-    discView: "Classic",
+    discussionsView: "Classic",
   }),
   computed: {
     ...mapState(["notificationCount", "hasUnreadMessages"]),
@@ -394,13 +394,13 @@ export default {
       this.neutralEngagement = settings.neutralEngagement;
       this.likeNotifications = settings.likeNotifications ?? true;
       this.blockedTags = Array.from(settings.blockedTags ?? []);
-      this.discView = settings.discView;
+      this.discussionsView = settings.discussionsView;
 
       console.log(settings.blockedTags);
     },
 
     //Change Discussions view style to whatever version the user prefers.
-    async changeView(view){
+    async changeView(discussionsView){
       const allowNsfw = this.allowNsfw;
       const blurNsfw = this.blurNsfw;
       const neutralEngagement = this.neutralEngagement;
@@ -414,21 +414,18 @@ export default {
       }
 
       //TODO: Make the system store this value among the user preferences so they don't have to load them again.
-      this.discView = view;
+      this.discussionsView = discussionsView;
       //Switch to the view.
-      if(this.discView == "Light"){
+      if(this.discussionsView == "Light"){
           console.log("Light View activated");
       }
-      console.log("VIEW SETTING HERE:");
-      console.log(view);
       const settings = {
         allowNsfw,
         blurNsfw,
         neutralEngagement,
         likeNotifications,
         blockedTags,
-
-        view,
+        discussionsView,
       }
       this.$store.commit("set", ["settings", settings]);        
       const result = await api.Account.saveSettings(settings);

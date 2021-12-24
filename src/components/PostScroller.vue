@@ -26,7 +26,7 @@
             <!--%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
             %%%%%%%% MODIFIED HERE FOR VIEWS %%%%%%%
             %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%-->
-            <div v-if="settings.view == 'Classic'">
+            <div v-if="discView == 'Classic'">
                 <!--%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
                 %%%% IMPORTANT - THIS LOADS THE POSTS %%%
                 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%-->
@@ -44,10 +44,10 @@
             <!--%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%-->
             <!--This will load the Reddit like view-->
             <!--%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%-->
-            <div v-if="settings.view == 'Light'">
+            <div v-if="discView == 'Light'">
                 <v-col :cols="12">
                   <div class="container">
-                      <div class="left">
+                      <div class="leftPost">
                          <v-btn
                             text
                             small
@@ -73,7 +73,7 @@
 
                       </div>
 
-                      <div class="right">
+                      <div class="rightPost">
 
                           <!--Show if post has been tipped-->
                           <div v-if="post.tips.length > 0" class="mb-1">
@@ -161,6 +161,14 @@ export default {
   },
   data: () => ({}),
   computed: {
+    discView(){
+      //TODO: Currently this doesn't load the discView settings that we made commit to in the SettingsPage and the button. Need to find a way to fix that.
+      console.log(this.settings);
+      if(!this.settings.discussionsView){
+        return "Classic"
+      }
+      return this.settings.discussionsView;
+    },
     ...mapState(['submittedPost'])
   },
   watch: {
@@ -276,3 +284,15 @@ export default {
   },
 };
 </script>
+
+<style lang="scss">
+.container{
+  display: flex;
+}
+.leftPost {
+  width: 20%;
+}
+.rightPost {
+  width: 70%;
+}
+</style>
