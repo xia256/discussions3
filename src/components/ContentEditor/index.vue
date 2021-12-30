@@ -96,6 +96,9 @@
         >
           <span>test</span>
         </v-btn>
+        <div>
+          <h2>COMMUNITY SEARCH</h2>
+        </div>
       </div>
       <div class="post-editor-content">
         <div
@@ -224,6 +227,12 @@ export default {
   },
   computed: {
 
+
+
+
+
+
+
   },
   watch: {
     value() {
@@ -257,6 +266,19 @@ export default {
     document.removeEventListener("selectionchange", this.onSelectionChange);
   },
   methods: {
+    async commData(){
+      const communityData = await api.Search.getPopularCommunities({
+//        cursorId: cursorId,
+      });
+
+      console.log("################################");
+      console.log("Community data");
+      console.log(communityData);
+      return communityData;
+    },
+
+
+
     processMentionTextNode(textNode) {
       const textValue = textNode.nodeValue;
       const searchRegex = this._spaceDetectRequired

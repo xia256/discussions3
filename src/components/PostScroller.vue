@@ -54,7 +54,7 @@
                             dense
                             class="pa-0"
                             :color="post.isLiked ? 'red' : 'tertiary'"
-                            @click="likePost"
+                            @click="likePost(post)"
                           >
                             <v-icon>mdi-heart-outline</v-icon>
                             <span v-if="!settings.neutralEngagement">{{
@@ -249,24 +249,37 @@ export default {
     },
 
     //Function to like a published post without having to open it.
-    async likePost() {
+    async likePost(post) {
       if (this.requireLoginDialog()) return;
       if (this.waiting) return;
                                                                                  
       const identityKey = this.keyManager.keys["identity"];
-      if (this.post.identityPublicKey == identityKey.pub && this.post.isLiked)
+
+      //TO DEBUG:
+      /*
+      console.log("IDENTITY KEY:");
+      console.log(identityKey);
+
+
+      console.log("POST IDENTITY KEY:");
+      console.log(post.identityPublicKey);
+      */
+      
+      //If the user is upvoting itself or the post is already liked.
+      if (post.identityPublicKey == identityKey.pub && this.post.isLiked)
+        //Do nothing.
         return;
-                                                                                 
+
       await this.wait(async () => {
-        const inverted = this.post.isLiked ? false : true;
+        const inverted = post.isLiked ? false : true;
                                                                                  
         // be optimistic about this and set it before signing and api call
-        this.post.isLiked = inverted;
-        this.post.totalLikes += inverted ? 1 : -1;
+        post.isLiked = inverted;
+        post.totalLikes += inverted ? 1 : -1;
                                                                                  
         const args = {
           identityPublicKey: identityKey.pub,
-          postId: this.post.id,
+          postId: post.id,
           value: inverted,
           nonce: Date.now(),
         };
@@ -279,6 +292,7 @@ export default {
           ...args,
         });
       });
+
     },
 
   },
