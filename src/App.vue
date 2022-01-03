@@ -1,12 +1,15 @@
 <template>
   <router-view v-if="standalone" />
   <v-app v-else>
+
+    <!--This is the app bar that loads the logo, profile buttons and other stuff from the main user-->
     <AppBar
       v-if="!isOEmbed"
       v-show="serverConnected"
       flat
       @drawer="showLeftDrawer = true"
     />
+    <!--%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%-->
 
     <!-- drawers are only used on mobile ui -->
     <v-navigation-drawer
@@ -101,6 +104,7 @@
 </template>
 
 <style lang="scss">
+
 .embedly-card {
   .embedly-card-hug {
     margin: unset !important;
