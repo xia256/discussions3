@@ -300,6 +300,7 @@
           </v-btn>
         </v-list-item>
 
+        <!--TODO: Finish this Imageboard view.
         <v-list-item class="mt-4">
           <v-btn
             rounded
@@ -309,8 +310,9 @@
             >
             <span>Imageboard View</span>
           </v-btn>
-
         </v-list-item>
+        -->
+
         <!--%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%-->
 
         <!--Dialog box to submit a new post-->

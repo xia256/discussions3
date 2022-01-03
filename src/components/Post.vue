@@ -416,6 +416,7 @@
 
 .left {
   width: 50%;
+  margin-left: 0px;
 }
 
 .right {

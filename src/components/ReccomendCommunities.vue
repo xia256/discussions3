@@ -12,7 +12,9 @@
         >
           <v-card-text>
             <!--This displays the data about each community.-->
-            {{ c }}
+            <!--
+              {{ c }}
+            -->
             <CommunityInfo :value="c" />
           </v-card-text>
         </v-card>

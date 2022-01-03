@@ -35,12 +35,12 @@ export default {
       const community = sanitizeHTML(this.post.content);
 //      console.log(community.match('href="/c/([^"]*)')[1]);
 
-      //Regexp the value to extract the community from the post if it exists, otherwise default it to blog.
+      //Regexp the value to extract the community from the post if it exists, otherwise default it to general.
       if(community.match('href="/c/([^"]*)')){
 //        console.log(community.match('href="/c/([^"]*)'));
         return community.match('href="/c/([^"]*)')[1];
       }else {
-        return "blog"
+        return "general"
       }
     }
   }
