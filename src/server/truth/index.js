@@ -7,7 +7,7 @@ import { Api, JsonRpc } from "eosjs";
 import { JsSignatureProvider } from "eosjs/dist/eosjs-jssig";
 import fetch from "node-fetch";
 
-const PUBLISH_FREQUENCY = 1000 * 2;
+const PUBLISH_FREQUENCY = 1000 * 60 * 10;
 const ACTION_BATCH_SIZE = 100;
 
 import { tryConnectDatabase, getDatabase } from '../mongodb';

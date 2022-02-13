@@ -469,7 +469,9 @@ class SearchGatewayController extends BaseGatewayController {
                 },*/
                 ...projectPostPipeline(account?.identityPublicKey)
             ];
-            return await posts.aggregate(pipeline);
+            return await posts.aggregate(pipeline, {
+                allowDiskUse:true
+               });
         });
     }
 
