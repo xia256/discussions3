@@ -24,11 +24,15 @@
         style="max-width: calc(100%)"
         :class="{ post__topborder: reply }"
       >
+
         <v-card-text
           v-if="post"
           class="pb-1 pt-1 d-inline-block post__text"
           :class="{ 'post__text--highlight': highlight, 'pa-1': isMobile }"
         >
+
+        <!--Will appear if the code has been set up as blocked-->
+        <!--TODO: Can add new styles depending how the mod has set it up-->
           <v-row v-if="isBlocked" no-gutters>
             <v-col :cols="12">
               <div class="d-flex align-center w-512px">
@@ -48,227 +52,269 @@
             </v-col>
           </v-row>
           <v-row v-show="!isBlocked" no-gutters>
-            <v-col :cols="12">
-              <div class="mb-1">
-                <Avatar
-                  v-if="!noAvatar"
-                  class="d-inline mr-2"
-                  :src="post.avatar"
-                />
-                <router-link
-                  text
-                  small
-                  dense
-                  class="
-                    d-inline-block
-                    mr-2
-                    font-weight-bold
-                    text-decoration-none
-                  "
-                  :to="{
-                    name: 'profile',
-                    params: { username: post.username },
-                  }"
-                  @mouseover.native="
-                    (e) => openProfilePopover(e, post.username)
-                  "
-                >
-                  <span>@{{ post.username }}</span>
-                </router-link>
-                <v-tooltip right>
-                  <template v-slot:activator="{ on, attrs }">
-                    <span
-                      class="d-inline-block tertiary--text mr-2"
-                      v-bind="attrs"
-                      v-on="on"
+                <v-col :cols="12">
+                  <div class="container">
+                  <!--User Avatar gets shown heremb-1-->
+                  <div class="left">
+                    <Avatar
+                      v-if="!noAvatar"
+                      class="d-inline mr-2"
+                      :src="post.avatar"
+                    />
+
+                    <!--Link to the profile once clicking on the User Avatar.-->
+                    <router-link
+                      text
+                      small
+                      dense
+                      class="
+                        d-inline-block
+                        mr-2
+                        font-weight-bold
+                        text-decoration-none
+                      "
+                      :to="{
+                        name: 'profile',
+                        params: { username: post.username },
+                      }"
+                      @mouseover.native="
+                        (e) => openProfilePopover(e, post.username)
+                      "
                     >
-                      {{ shortDateString }}
+                      <span>@{{ post.username }}</span>
+                    </router-link>
+
+
+
+
+
+
+
+
+
+                    <v-tooltip right>
+                      <template v-slot:activator="{ on, attrs }">
+                        <span
+                          class="d-inline-block tertiary--text mr-2"
+                          v-bind="attrs"
+                          v-on="on"
+                        >
+                          {{ shortDateString }}
+                        </span>
+                      </template>
+                      <span>{{ fullDateString }}</span>
+                    </v-tooltip>
+                    <span v-if="post.pinned" class="mr-2">
+                      <v-icon class="success--text">mdi-pin</v-icon>
                     </span>
-                  </template>
-                  <span>{{ fullDateString }}</span>
-                </v-tooltip>
-                <span v-if="post.pinned" class="mr-2">
-                  <v-icon class="success--text">mdi-pin</v-icon>
-                </span>
-                <a
-                  class="
-                    d-inline-block
-                    text-decoration-none
-                    tertiary--text
-                    mr-2
-                  "
-                  href="javascript:void(0)"
-                  @click="hideContent = !hideContent"
-                  >[ {{ hideContent ? "+" : "-" }} ]</a
-                >
-              </div>
-              <div v-if="post.tips.length > 0" class="mb-1">
-                <PostTips :tips="post.tips" />
-              </div>
-              <v-expand-transition>
-                <div v-if="isEditing">
-                  <v-row no-gutters>
-                    <v-col :cols="12">
-                      <PostSubmitter
-                        :disabled="waiting"
-                        :initial-value="post.content"
-                        cancelable
-                        submit-text="save"
-                        @submit="editPost"
-                        @cancel="isEditing = false"
+                    <a
+                      class="
+                        d-inline-block
+                        text-decoration-none
+                        tertiary--text
+                        mr-2
+                      "
+                      href="javascript:void(0)"
+                      @click="hideContent = !hideContent"
+                      >[ {{ hideContent ? "+" : "-" }} ]</a
+                    >
+
+                  </div>
+
+                      <!--Display what community the post belongs to-->
+
+                    <div class="right">
+                      <PostCommunity :post="post.replyContext ? post.replyContext : post"></PostCommunity>
+
+
+
+                    </div>
+                  </div>
+
+
+                  <div v-if="post.tips.length > 0" class="mb-1">
+                    <PostTips :tips="post.tips" />
+                  </div>
+
+                  <v-expand-transition>
+                    <div v-if="isEditing">
+                      <v-row no-gutters>
+                        <v-col :cols="12">
+                          <PostSubmitter
+                            :disabled="waiting"
+                            :initial-value="post.content"
+                            cancelable
+                            submit-text="save"
+                            @submit="editPost"
+                            @cancel="isEditing = false"
+                          />
+                        </v-col>
+                      </v-row>
+                    </div>
+                    <div v-else>
+
+
+
+
+
+
+
+
+                      <!--%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+                      %%%%This loads the post content ensuring it has been sanitized.%%%
+                      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%-->
+                      <SanitizedHtml
+                        v-show="!hideContent"
+                        ref="postContent"
+                        :data-oembed="embedded ? 1 : 0"
+                        :class="[
+                          `post__content`,
+                          contentClass,
+                          post.isNsfw && settings.blurNsfw
+                            ? 'post__content--blur'
+                            : '',
+                          isMobile ? 'pl-1' : '',
+                        ]"
+                        :html="post.content"
                       />
+                      <!--%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%-->
+                      <v-btn
+                        v-show="!hideContent"
+                        block
+                        text
+                        dense
+                        small
+                        class="mt-n7"
+                        @click="showOverflow()"
+                      >
+                        Show more
+                      </v-btn>
+                    </div>
+                  </v-expand-transition>
+                  <v-row no-gutters class="ml-n2">
+                    <v-col class="d-flex">
+                      <v-btn
+                        text
+                        small
+                        dense
+                        class="pa-0"
+                        color="tertiary"
+                        @click="openThread(post)"
+                      >
+                        <v-icon>mdi-chat-outline</v-icon>
+                        {{ post.totalReplies }}
+                      </v-btn>
+
+
+                      <!-- retweet/share menu (...) -->
+                      <v-menu offset-y>
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-btn
+                            text
+                            small
+                            dense
+                            class="pa-0"
+                            color="tertiary"
+                            v-bind="attrs"
+                            v-on="on"
+                          >
+                            <v-icon>mdi-repeat-variant</v-icon>
+                          </v-btn>
+                        </template>
+                        <v-list>
+                          <v-list-item>
+                            <v-btn text block @click="socialShare('self')">
+                              <v-icon class="mr-2"> mdi-repeat-variant </v-icon>
+                              <span>Share</span>
+                            </v-btn>
+                          </v-list-item>
+                          <v-list-item>
+                            <v-btn text block @click="socialShare('twitter')">
+                              <v-icon class="mr-2"> mdi-twitter </v-icon>
+                              <span>Twitter</span>
+                            </v-btn>
+                          </v-list-item>
+                        </v-list>
+                      </v-menu>
+                      <v-btn
+                        text
+                        small
+                        dense
+                        class="pa-0"
+                        :color="post.isLiked ? 'red' : 'tertiary'"
+                        @click="likePost"
+                      >
+                        <v-icon>mdi-heart-outline</v-icon>
+                        <span v-if="!settings.neutralEngagement">{{
+                          post.totalLikes
+                        }}</span>
+                      </v-btn>
+                      <div class="d-inline" :class="{ 'flex-grow-1': isMobile }" />
+                      <!-- drop down menu (...) -->
+                      <v-menu offset-y>
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-btn
+                            text
+                            small
+                            dense
+                            class="pa-0"
+                            color="tertiary"
+                            v-bind="attrs"
+                            v-on="on"
+                          >
+                            <v-icon>mdi-dots-horizontal</v-icon>
+                          </v-btn>
+                        </template>
+                        <v-list>
+                          <v-list-item>
+                            <v-btn text block @click="tipPost">
+                              <v-icon>mdi-wallet</v-icon>
+                              <span>Tip</span>
+                            </v-btn>
+                          </v-list-item>
+                          <v-list-item v-if="isGlobalModerator">
+                            <v-btn text block @click="pinPost">
+                              <v-icon>mdi-pin</v-icon>
+                              <span>{{ post.pinned ? "Unpin" : "Pin" }}</span>
+                            </v-btn>
+                          </v-list-item>
+                          <v-list-item
+                            v-show="
+                              isLoggedIn &&
+                              post.identityPublicKey == selfIdentityPublicKey
+                            "
+                          >
+                            <v-btn text block @click="isEditing = true">
+                              <v-icon class="mr-2"> mdi-pencil </v-icon>
+                              <span>Edit</span>
+                            </v-btn>
+                          </v-list-item>
+                          <v-list-item>
+                            <v-btn text block @click="ignorePost">
+                              <v-icon class="mr-2"> mdi-block-helper </v-icon>
+                              <span>{{
+                                post.ignoredBy.includes(selfIdentityPublicKey)
+                                  ? "Unhide"
+                                  : "Hide"
+                              }}</span>
+                            </v-btn>
+                          </v-list-item>
+                          <v-list-item>
+                            <v-btn text block @click="flagNsfwPost">
+                              <v-icon class="mr-2"> mdi-alert </v-icon>
+                              <span>{{
+                                post.flaggedNsfwBy.includes(selfIdentityPublicKey)
+                                  ? "Unflag NSFW"
+                                  : "Flag NSFW"
+                              }}</span>
+                            </v-btn>
+                          </v-list-item>
+                        </v-list>
+                      </v-menu>
                     </v-col>
                   </v-row>
-                </div>
-                <div v-else>
-                  <SanitizedHtml
-                    v-show="!hideContent"
-                    ref="postContent"
-                    :data-oembed="embedded ? 1 : 0"
-                    :class="[
-                      `post__content`,
-                      contentClass,
-                      post.isNsfw && settings.blurNsfw
-                        ? 'post__content--blur'
-                        : '',
-                      isMobile ? 'pl-1' : '',
-                    ]"
-                    :html="post.content"
-                  />
-                  <v-btn
-                    v-show="!hideContent"
-                    block
-                    text
-                    dense
-                    small
-                    class="mt-n7"
-                    @click="showOverflow()"
-                  >
-                    Show more
-                  </v-btn>
-                </div>
-              </v-expand-transition>
-              <v-row no-gutters class="ml-n2">
-                <v-col class="d-flex">
-                  <v-btn
-                    text
-                    small
-                    dense
-                    class="pa-0"
-                    color="tertiary"
-                    @click="openThread(post)"
-                  >
-                    <v-icon>mdi-chat-outline</v-icon>
-                    {{ post.totalReplies }}
-                  </v-btn>
-                  <!-- retweet/share menu (...) -->
-                  <v-menu offset-y>
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-btn
-                        text
-                        small
-                        dense
-                        class="pa-0"
-                        color="tertiary"
-                        v-bind="attrs"
-                        v-on="on"
-                      >
-                        <v-icon>mdi-repeat-variant</v-icon>
-                      </v-btn>
-                    </template>
-                    <v-list>
-                      <v-list-item>
-                        <v-btn text block @click="socialShare('self')">
-                          <v-icon class="mr-2"> mdi-repeat-variant </v-icon>
-                          <span>Share</span>
-                        </v-btn>
-                      </v-list-item>
-                      <v-list-item>
-                        <v-btn text block @click="socialShare('twitter')">
-                          <v-icon class="mr-2"> mdi-twitter </v-icon>
-                          <span>Twitter</span>
-                        </v-btn>
-                      </v-list-item>
-                    </v-list>
-                  </v-menu>
-                  <v-btn
-                    text
-                    small
-                    dense
-                    class="pa-0"
-                    :color="post.isLiked ? 'red' : 'tertiary'"
-                    @click="likePost"
-                  >
-                    <v-icon>mdi-heart-outline</v-icon>
-                    <span v-if="!settings.neutralEngagement">{{
-                      post.totalLikes
-                    }}</span>
-                  </v-btn>
-                  <div class="d-inline" :class="{ 'flex-grow-1': isMobile }" />
-                  <!-- drop down menu (...) -->
-                  <v-menu offset-y>
-                    <template v-slot:activator="{ on, attrs }">
-                      <v-btn
-                        text
-                        small
-                        dense
-                        class="pa-0"
-                        color="tertiary"
-                        v-bind="attrs"
-                        v-on="on"
-                      >
-                        <v-icon>mdi-dots-horizontal</v-icon>
-                      </v-btn>
-                    </template>
-                    <v-list>
-                      <v-list-item>
-                        <v-btn text block @click="tipPost">
-                          <v-icon>mdi-wallet</v-icon>
-                          <span>Tip</span>
-                        </v-btn>
-                      </v-list-item>
-                      <v-list-item v-if="isGlobalModerator">
-                        <v-btn text block @click="pinPost">
-                          <v-icon>mdi-pin</v-icon>
-                          <span>{{ post.pinned ? "Unpin" : "Pin" }}</span>
-                        </v-btn>
-                      </v-list-item>
-                      <v-list-item
-                        v-show="
-                          isLoggedIn &&
-                          post.identityPublicKey == selfIdentityPublicKey
-                        "
-                      >
-                        <v-btn text block @click="isEditing = true">
-                          <v-icon class="mr-2"> mdi-pencil </v-icon>
-                          <span>Edit</span>
-                        </v-btn>
-                      </v-list-item>
-                      <v-list-item>
-                        <v-btn text block @click="ignorePost">
-                          <v-icon class="mr-2"> mdi-block-helper </v-icon>
-                          <span>{{
-                            post.ignoredBy.includes(selfIdentityPublicKey)
-                              ? "Unhide"
-                              : "Hide"
-                          }}</span>
-                        </v-btn>
-                      </v-list-item>
-                      <v-list-item>
-                        <v-btn text block @click="flagNsfwPost">
-                          <v-icon class="mr-2"> mdi-alert </v-icon>
-                          <span>{{
-                            post.flaggedNsfwBy.includes(selfIdentityPublicKey)
-                              ? "Unflag NSFW"
-                              : "Flag NSFW"
-                          }}</span>
-                        </v-btn>
-                      </v-list-item>
-                    </v-list>
-                  </v-menu>
                 </v-col>
-              </v-row>
-            </v-col>
+
           </v-row>
         </v-card-text>
 
@@ -362,6 +408,21 @@
 </template>
 
 <style lang="scss">
+
+//Temporary change 
+.container {
+  display: flex;
+}
+
+.left {
+  width: 50%;
+  margin-left: 0px;
+}
+
+.right {
+  width: 40%;
+}
+
 .post--embedded {
   margin-top: 8px;
   max-width: 512px !important;
@@ -493,6 +554,8 @@ import Avatar from "./Avatar";
 import SanitizedHtml from "./SanitizedHtml";
 import PostSubmitter from "./PostSubmitter";
 import PostTips from "./PostTips";
+//Import to load Community link.
+import PostCommunity from "../components/PostCommunity.vue";
 
 export default {
   name: "Post",
@@ -501,6 +564,7 @@ export default {
     SanitizedHtml,
     PostSubmitter,
     PostTips,
+    PostCommunity,
   },
   mixins: [mixins.Common],
   props: {

@@ -274,6 +274,48 @@
             </v-list>
           </v-menu>
         </v-list-item>
+
+        <!--%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%-->
+        <!--Button to change the view from Twitter style to Reddit or even 4chan style-->
+        <!--%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%-->
+        <v-list-item class="mt-4">
+          <v-btn
+            rounded
+            color="primary"
+            block
+            @click="changeView('Classic')"
+            >
+            <span>Classic View</span>
+          </v-btn>
+        </v-list-item>
+
+        <v-list-item class="mt-4">
+          <v-btn
+            rounded
+            color="primary"
+            block
+            @click="changeView('Light')"
+            >
+            <span>Light View</span>
+          </v-btn>
+        </v-list-item>
+
+        <!--TODO: Finish this Imageboard view.
+        <v-list-item class="mt-4">
+          <v-btn
+            rounded
+            color="primary"
+            block
+            @click="changeView('Imageboard')"
+            >
+            <span>Imageboard View</span>
+          </v-btn>
+        </v-list-item>
+        -->
+
+        <!--%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%-->
+
+        <!--Dialog box to submit a new post-->
         <v-list-item
           v-if="isLoggedIn"
           class="mt-4"
@@ -294,10 +336,15 @@
 </template>
 
 <script>
+//import ServerConfig from "../server/api/config.json";
+import api from "../server/api";
+
 import { mapState } from "vuex";
 import mixins from "../mixins";
 
 import ToolTip from "./ToolTip";
+
+api;
 
 export default {
   name: "AppNavigation",
@@ -310,13 +357,27 @@ export default {
   },
   data: () => ({
     textSearchQuery: "",
+    allowNsfw: false,
+    blurNsfw: true,
+    neutralEngagement: false,
+    likeNotifications: true,
+    blockedTags: [],
+
+    //Sets what type of view will be used by the application.
+    //Classic = Twitter like.
+    //Light = Reddit like.
+    //Imageboard = 4chan like.
+    discussionsView: "Classic",
   }),
   computed: {
     ...mapState(["notificationCount", "hasUnreadMessages"]),
   },
   watch: {},
   async created() {},
-  async mounted() {},
+  async mounted() {
+    //Load the Settings to prevent reset.
+    this.setSettings();
+  },
   async beforeDestroy() {},
   methods: {
     textSearch() {
@@ -324,6 +385,54 @@ export default {
         name: "search",
         query: { q: this.textSearchQuery ?? "" },
       });
+    },
+
+    async setSettings() {
+      await this.waitForLoginFinish();
+
+      const settings = this.settings;
+      this.allowNsfw = settings.allowNsfw;
+      this.blurNsfw = settings.blurNsfw;
+      this.neutralEngagement = settings.neutralEngagement;
+      this.likeNotifications = settings.likeNotifications ?? true;
+      this.blockedTags = Array.from(settings.blockedTags ?? []);
+      this.discussionsView = settings.discussionsView;
+
+      console.log(settings.blockedTags);
+    },
+
+    //Change Discussions view style to whatever version the user prefers.
+    async changeView(discussionsView){
+      const allowNsfw = this.allowNsfw;
+      const blurNsfw = this.blurNsfw;
+      const neutralEngagement = this.neutralEngagement;
+      const likeNotifications = this.likeNotifications;
+
+      let blockedTags = this.blockedTags;
+      for (let i = 0; i < blockedTags.length; i++) {
+        let tag = blockedTags[i].toLowerCase().trim();
+        if (tag.startsWith("#")) tag = tag.substring(1);
+        blockedTags[i] = tag;
+      }
+
+      //TODO: Make the system store this value among the user preferences so they don't have to load them again.
+      this.discussionsView = discussionsView;
+      //Switch to the view.
+      if(this.discussionsView == "Light"){
+          console.log("Light View activated");
+      }
+      const settings = {
+        allowNsfw,
+        blurNsfw,
+        neutralEngagement,
+        likeNotifications,
+        blockedTags,
+        discussionsView,
+      }
+      this.$store.commit("set", ["settings", settings]);        
+      const result = await api.Account.saveSettings(settings);
+      console.log(`Saved`, result, settings);
+      return result;
     },
     async test(sender) {
       sender;

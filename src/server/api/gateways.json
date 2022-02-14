@@ -1,0 +1,71 @@
+{
+  "UtilityGatewayController": {
+    "constructor": "UtilityGatewayController.constructor",
+    "ping": "UtilityGatewayController.ping",
+    "oembed": "UtilityGatewayController.oembed",
+    "setRenderReady": "UtilityGatewayController.setRenderReady",
+    "test": "UtilityGatewayController.test"
+  },
+  "AccountGatewayController": {
+    "constructor": "AccountGatewayController.constructor",
+    "getLoginChallenge": "AccountGatewayController.getLoginChallenge",
+    "login": "AccountGatewayController.login",
+    "logout": "AccountGatewayController.logout",
+    "saveSettings": "AccountGatewayController.saveSettings",
+    "recoverAccount": "AccountGatewayController.recoverAccount"
+  },
+  "ActionGatewayController": {
+    "constructor": "ActionGatewayController.constructor",
+    "flagNsfwPost": "ActionGatewayController.flagNsfwPost",
+    "ignorePost": "ActionGatewayController.ignorePost",
+    "blockUser": "ActionGatewayController.blockUser",
+    "followUser": "ActionGatewayController.followUser",
+    "likePost": "ActionGatewayController.likePost",
+    "getIdentities": "ActionGatewayController.getIdentities",
+    "pinPost": "ActionGatewayController.pinPost",
+    "createPost": "ActionGatewayController.createPost",
+    "sendDirectMessage": "ActionGatewayController.sendDirectMessage",
+    "updateProfile": "ActionGatewayController.updateProfile",
+    "oauthLink": "ActionGatewayController.oauthLink",
+    "joinLeaveCommunity": "ActionGatewayController.joinLeaveCommunity",
+    "abdictateCommunity": "ActionGatewayController.abdictateCommunity",
+    "createCommunity": "ActionGatewayController.createCommunity",
+    "createAccount": "ActionGatewayController.createAccount",
+    "seenDirectMessages": "ActionGatewayController.seenDirectMessages"
+  },
+  "SearchGatewayController": {
+    "constructor": "SearchGatewayController.constructor",
+    "disposeCursor": "SearchGatewayController.disposeCursor",
+    "searchAccounts": "SearchGatewayController.searchAccounts",
+    "getSinglePost": "SearchGatewayController.getSinglePost",
+    "getThread": "SearchGatewayController.getThread",
+    "getUsersPosts": "SearchGatewayController.getUsersPosts",
+    "getHashtagPosts": "SearchGatewayController.getHashtagPosts",
+    "getThreadContext": "SearchGatewayController.getThreadContext",
+    "getTrendingTags": "SearchGatewayController.getTrendingTags",
+    "getExploreTags": "SearchGatewayController.getExploreTags",
+    "getTextSearchPosts": "SearchGatewayController.getTextSearchPosts",
+    "getIgnoredPosts": "SearchGatewayController.getIgnoredPosts",
+    "getOwnedCommunities": "SearchGatewayController.getOwnedCommunities",
+    "getCommunityInfo": "SearchGatewayController.getCommunityInfo",
+    "getCommunityPosts": "SearchGatewayController.getCommunityPosts",
+    "getFeedPosts": "SearchGatewayController.getFeedPosts",
+    "getBlocked": "SearchGatewayController.getBlocked",
+    "getFollow": "SearchGatewayController.getFollow",
+    "getPopularCommunities": "SearchGatewayController.getPopularCommunities",
+    "getPopularUsers": "SearchGatewayController.getPopularUsers",
+    "getFollowReccomendations": "SearchGatewayController.getFollowReccomendations",
+    "getNotifications": "SearchGatewayController.getNotifications",
+    "hasUnreadMessages": "SearchGatewayController.hasUnreadMessages",
+    "getNotificationCount": "SearchGatewayController.getNotificationCount",
+    "getActiveChats": "SearchGatewayController.getActiveChats",
+    "getDirectMessages": "SearchGatewayController.getDirectMessages",
+    "getUserInfo": "SearchGatewayController.getUserInfo",
+    "postProcessItem": "SearchGatewayController.postProcessItem"
+  },
+  "CryptoGatewayController": {
+    "constructor": "CryptoGatewayController.constructor",
+    "tickers": "CryptoGatewayController.tickers",
+    "transfer": "CryptoGatewayController.transfer"
+  }
+}

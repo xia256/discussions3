@@ -59,15 +59,18 @@ class ApiClient extends EventTarget {
         });
 
         socket.on('connect', () => {
+            console.log(`Socket connected`);
             this.#readyUp(host);
         });
 
         socket.on('disconnect', () => {
+            console.log(`Socket disconnected`);
             this.#clientId = 0;
             this.dispatchEvent(new CustomEvent('disconnect'));
         });
 
         socket.on('reconnect', () => {
+            console.log(`Socket reconnected`);
             this.#readyUp(host);
             this.dispatchEvent(new CustomEvent('reconnect'));
         });
