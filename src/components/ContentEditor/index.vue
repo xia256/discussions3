@@ -97,7 +97,7 @@
           <span>test</span>
         </v-btn>
         <div>
-          <h2>COMMUNITY SEARCH</h2>
+          <!--<h2>COMMUNITY SEARCH</h2>-->
         </div>
       </div>
       <div class="post-editor-content">

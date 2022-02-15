@@ -1,13 +1,13 @@
 {
-  "name": "Discussions",
-  "description": "Just some random social website",
+  "name": "D-Beta",
+  "description": "Just a decentralized communication platform",
   "logo": "https://cdn.novusphere.io/static/atmos2.png",
   "genesis": 1483246800000,
-  "url": "https://discussions.app",
+  "url": "https://beta.discussions.app",
   "rendertron": "http://localhost:8010/render",
   "api": "/api/v1",
-  "salt": "discussions3",
-  "port": 5015,
+  "salt": "",
+  "port": 5035,
   "globalModerators": [
     "PUB_K1_7RWM4YvxcUEhZfHozf8XVajgvfh8wvohoJS9vx8Hg1K15W8NGQ",
     "PUB_K1_5FcwE6haZZNNTR6zA3QcyAwJwJhk53s7UjZDch1c7QgyfhY3L7",
@@ -75,8 +75,8 @@
     ]
   },
   "mongodb": {
-    "connection": "mongodb://localhost:27017",
-    "database": "discussions3",
+    "connection": "",
+    "database": "",
     "collections": {
       "oauths": "oauths",
       "accounts": "accounts",
