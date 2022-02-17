@@ -398,7 +398,7 @@ export default {
       this.blockedTags = Array.from(settings.blockedTags ?? []);
       this.discussionsView = settings.discussionsView;
 
-      console.log(settings.blockedTags);
+      console.log(settings);
     },
 
     //Change Discussions view style to whatever version the user prefers.
@@ -429,7 +429,7 @@ export default {
         blockedTags,
         discussionsView,
       }
-      this.$store.commit("set", ["settings", settings]);        
+      this.$store.commit("set", ["settings", settings]);
       const result = await api.Account.saveSettings(settings);
       console.log(`Saved`, result, settings);
       return result;

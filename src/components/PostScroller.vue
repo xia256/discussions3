@@ -162,8 +162,7 @@ export default {
   data: () => ({}),
   computed: {
     discView(){
-      //TODO: Currently this doesn't load the discView settings that we made commit to in the SettingsPage and the button. Need to find a way to fix that.
-      console.log(this.settings);
+      //console.log(this.settings);
       if(!this.settings.discussionsView){
         return "Classic"
       }

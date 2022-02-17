@@ -22,6 +22,37 @@
             </v-tabs>
           </v-card-text>
         </v-card>
+
+        <div>
+          <v-tabs>
+              <v-tab>
+                <!--This button sorts posts by Popular-->
+                <v-btn
+                  rounded
+                  color="primary"
+                  block
+                  @click="changePostOrder('popular')"
+                  >
+                  <span>Popular</span>
+                </v-btn>
+              </v-tab>
+              <v-tab>
+                <!--This button orders posts by date-->
+                <v-btn
+                  rounded
+                  color="primary"
+                  block
+                  @click="changePostOrder('recent')"
+                  >
+                  <span>Recent</span>
+                </v-btn>
+
+              </v-tab>
+            </v-tabs>
+
+        </div>
+
+
       </v-col>
       <v-col
         :cols="12"
@@ -137,14 +168,17 @@ export default {
       users: "mdi-account-multiple-plus",
       community: "mdi-account-group",
     },
+    postSort: "recent",
   }),
   computed: {
     tabName() {
       return this.tabs[this.tabIndex];
     },
     tabs() {
+      //If the user is logged in, return the following tabs.
       if (this.isLoggedIn)
         return ["feed", "popular", "trending", "users", "community"];
+      //Otherwise, only show those not related to his/her account.
       else return ["popular", "trending", "community"];
     },
   },
@@ -164,19 +198,31 @@ export default {
       return this.tabs.some((t) => t == name);
     },
     async getFeedPosts({ cursorId }) {
+      //console.log(this.postSort);
       return await api.Search.getFeedPosts({
         accountFilter: true,
         cursorId: cursorId,
-        sort: "popular",
+        sort: this.postSort,
       });
     },
     //Loads the posts from the Explore window.
     async getExplorePosts({ cursorId }) {
+      //console.log(this.postSort);
       return await api.Search.getFeedPosts({
         cursorId: cursorId,
-        sort: "popular",
+        sort: this.postSort,
       });
     },
+    //Property to modify the post order.
+    changePostOrder(postNSort){
+      //console.log("THIS POST NEW SORT: ");
+      //console.log(postNSort);
+      this.postSort = postNSort;
+      //console.log("POST SORT:");
+      //console.log(this.postSort);
+      return this.postSort;
+    },
+
     async advanceTrendingTags({ cursorId }) {
       return await api.Search.getTrendingTags({ cursorId, limit: 100 });
     },

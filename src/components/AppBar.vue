@@ -41,7 +41,7 @@
           <div :style="layoutLeftStyle">
             <div :style="`padding: 0 ${isMDPI ? 16 : 8}px`">
               <v-btn
-                class="text-h6"
+                class="text-h6 appbar"
                 btn
                 text
                 plain

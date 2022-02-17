@@ -29,8 +29,8 @@
       <!--DiscView from settings. Indicates how one wants to view Discussions. Currently only switches betweem Classic and Light view. To add a better control that displays Imageboard view.-->
       <Switch2
         v-model="discView"
-        :label="`Posts View (Classic/Light)`"
-        :help="`Choose if you want a Classic Posts View or a Light posts experience.`"
+        :label="`Posts View (Classic/Compact)`"
+        :help="`Activate to get a compact view with lighter loading times.`"
       />
 
     </v-col>
@@ -128,26 +128,47 @@ export default {
       this.neutralEngagement = settings.neutralEngagement;
       this.likeNotifications = settings.likeNotifications ?? true;
       this.blockedTags = Array.from(settings.blockedTags ?? []);
-      if(settings.discView == "Classic"){
+
+      //console.log(settings);
+      //console.log(settings.discussionsView);
+      //Verify if in stored configuration the view is defined as Classic - Light - Board.     
+      if(settings.discussionsView == "Classic"){
+        //console.log("CLASSIC VIEW HAS BEEN TRIGGERED");
         this.discView = false;
       }else{
+        //console.log("LIGHT VIEW HAS BEEN TRIGGERED");
         this.discView = true;
       }
+      //console.log("#################################");
 
-      console.log(settings.blockedTags);
+
     },
     async updateSettings() {
+      var settings = this.settings;
+
       const allowNsfw = this.allowNsfw;
       const blurNsfw = this.blurNsfw;
       const neutralEngagement = this.neutralEngagement;
       const likeNotifications = this.likeNotifications;
       let discussionsView = "Classic";
-      if(!this.discView){
+
+/*      //Verify if in stored configuration the view is defined as Classic - Light - Board.
+      if(settings.discView == "Classic"){
+        this.discView = false;
+      }else{
+        this.discView = true;
+      }*/
+
+
+/*      console.log("DISCUSSIONS VIEW CONTROLLER");
+      console.log(this.discView);
+      console.log("################################");*/
+      if(this.discView == false){
         discussionsView = "Classic";
-        console.log("Classic View activated");
+        //console.log("Classic View activated");
       }else{
         discussionsView = "Light";
-        console.log("Light View activated");
+        //console.log("Light View activated");
       }
 
       let blockedTags = this.blockedTags;
@@ -157,7 +178,7 @@ export default {
         blockedTags[i] = tag;
       }
 
-      const settings = {
+      settings = {
         allowNsfw,
         blurNsfw,
         neutralEngagement,
@@ -169,7 +190,7 @@ export default {
       this.$store.commit("set", ["settings", settings]);
 
       const result = await api.Account.saveSettings(settings);
-      console.log(`Saved`, result, settings);
+      //console.log(`Saved`, result, settings);
       return result;
     },
   },

@@ -37,7 +37,8 @@ export default {
             const layout = this.layout;
             if (this.isMobile) {
                 layout.showLeft = false;
-                layout.middleRightCols = 12;
+                //TODO: Modified from 8 to 10 in order to test the layout system and make space.
+                layout.middleRightCols = 10;
                 layout.showRight = false;
             }
             else if (this.is4K) {

@@ -3,12 +3,17 @@
   <v-app v-else>
 
     <!--This is the app bar that loads the logo, profile buttons and other stuff from the main user-->
+    <div
+      class="DiscussionsAppBar"
+      >
     <AppBar
       v-if="!isOEmbed"
       v-show="serverConnected"
       flat
       @drawer="showLeftDrawer = true"
+
     />
+    </div>
     <!--%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%-->
 
     <!-- drawers are only used on mobile ui -->
@@ -144,6 +149,11 @@
 
 .row {
   margin: 0px;
+}
+
+.DiscussionsAppBar {
+  margin: 10px;
+  width: 100%;
 }
 
 html,
