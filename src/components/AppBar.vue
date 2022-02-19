@@ -1,4 +1,4 @@
-<template>
+<template width="100%">
   <v-app-bar
     class="pl-0 appbar"
     :hide-on-scroll="isMobile && !isSafari"

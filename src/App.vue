@@ -3,9 +3,11 @@
   <v-app v-else>
 
     <!--This is the app bar that loads the logo, profile buttons and other stuff from the main user-->
+
     <div
       class="DiscussionsAppBar"
       >
+
     <AppBar
       v-if="!isOEmbed"
       v-show="serverConnected"
