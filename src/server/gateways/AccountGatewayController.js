@@ -72,6 +72,7 @@ class AccountGatewayController extends BaseGatewayController {
         likeNotifications,
         blockedTags,
         discussionsView,
+        postSort,
     }) {
 
         const identityPublicKey = this.identityPublicKey;
@@ -90,6 +91,7 @@ class AccountGatewayController extends BaseGatewayController {
                         likeNotifications,
                         blockedTags,
                         discussionsView,
+                        postSort,
                     }
                 }
             }

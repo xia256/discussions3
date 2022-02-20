@@ -192,6 +192,7 @@ export default {
     await this.setMeta({
       title: `Explore - ${ServerConfig.name}`,
     });
+    this.setSettings();
   },
   methods: {
     tabExists(name) {
@@ -213,11 +214,33 @@ export default {
         sort: this.postSort,
       });
     },
+    //Property to load Settings to the Explore page.
+    async setSettings(){
+      await this.waitForLoginFinish();
+      if(this.isLoggedIn){
+        //Load the Settings related to the post Order.
+        const settings = this.settings;
+        if(settings.postSort !== undefined){
+          this.postSort = settings.postSort;
+        }
+        else{
+          this.postSort = "popular";
+        }
+      }else{
+        //Otherwise user is not logged in and this load 'popular' as default.
+        this.postSort = "popular";
+      }
+      //console.log(this.postSort);
+    },
     //Property to modify the post order.
-    changePostOrder(postNSort){
-      //console.log("THIS POST NEW SORT: ");
-      //console.log(postNSort);
+    async changePostOrder(postNSort){
       this.postSort = postNSort;
+
+      //Verify if the user is logged in to load the Settings.
+      if (this.isLoggedIn){
+        //Store in Settings so it loads the same post order the next time the user logs in.
+        await this.updateSingleSetting("postSort", this.postSort);
+      }
       //console.log("POST SORT:");
       //console.log(this.postSort);
       return this.postSort;

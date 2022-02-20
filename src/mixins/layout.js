@@ -20,7 +20,7 @@ export default {
         },
         layoutMiddleStyle() {
             let middleWidthSize = '975px';
-            if (this.isMobile) middleWidthSize = "375px";
+            if (this.isMobile) middleWidthSize = "100%";
 
             //This is modified to extend or reduce the width of the content displayed on posts.
             if (this.layout.showRight) middleWidthSize = "850px";
