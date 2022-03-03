@@ -1,6 +1,4 @@
 <template>
-
-  <!--This is the sanitized content from the backend posts--> 
   <div
     v-bind="$attrs"
     v-html="sanitizedHtml"

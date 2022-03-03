@@ -26,7 +26,7 @@ function shortDateString(date) {
     const DAY = 24 * HOUR;
     const YEAR = 365 * DAY;
 
-    const delta = Date.now() - date.getTime();
+    const delta = Math.abs(Date.now() - date.getTime());
     if (delta < MINUTE) return `${Math.max(1, Math.floor(delta / SECOND))}s`;
     if (delta < HOUR) return `${Math.max(1, Math.floor(delta / MINUTE))}m`;
     if (delta < DAY) return `${Math.max(1, Math.floor(delta / HOUR))}h`;
@@ -116,96 +116,6 @@ function sanitizeHTML(html, { allowedTags } = { allowedTags: [] }) {
             "thead",
             "caption",
             "tbody",
-            "tr",
-            "th",
-            "td",
-            "pre",
-            ...allowedTags
-        ],
-        //allowVulnerableTags: true,
-        allowedAttributes: {
-            ..._sanitizeHTML.defaults.allowedAttributes,
-            span: ["data-value", "data-denotation-char", "class"],
-            a: ["class", "data-denotation-char", "href", "target"],
-            blockquote: ["class"],
-            div: [
-                "data-hiki-oembed",
-                "class",
-                "data-embed-media", "data-embed-parent", "data-embed-live", "data-embed-uuid", "data-embed-created"
-            ],
-            iframe: ["width", "height", "src", "frameborder", "allow", "allowfullscreen"],
-            //script: ["async", "src", "charset"]
-        },
-    });
-}
-
-//Helper function similar to sanitizeHTML but without the images and other tags that take too much space.
-function thumbImgHTML(html, { allowedTags } = { allowedTags: [] }) {
-
-    // guard against characters that have jank rendering
-    // note: this was commented out since we now guard using overflow hidden
-    //html = html.replace(/([\u0300-\u036F]|[\uD800-\uDFFF]|[\u1E00-\u1EFF]|[\u2300-\u23FF]|[\u0E00-\u0E7F])+/g, ' ');
-
-    return _sanitizeHTML(html, {
-        allowedTags: [
-            "h1",
-            "h2",
-            "h3",
-            "h4",
-            "h5",
-            "h6",
-            "blockquote",
-            "p",
-            "span",
-            "nl",
-            "b",
-            "i",
-            "s",
-            "strong",
-            "em",
-            "strike",
-            "center",
-            "hr",
-            "br",
-            "tr",
-            "th",
-            "td",
-            "pre",
-            "img",
-            ...allowedTags
-        ],
-        //allowVulnerableTags: true,
-        allowedAttributes: {
-            ..._sanitizeHTML.defaults.allowedAttributes,
-            span: ["data-value", "data-denotation-char", "class"],
-            a: ["class", "data-denotation-char", "href", "target"],
-            blockquote: ["class"],
-            div: [
-                "data-hiki-oembed",
-                "class",
-                "data-embed-media", "data-embed-parent", "data-embed-live", "data-embed-uuid", "data-embed-created"
-            ],
-            iframe: ["width", "height", "src", "frameborder", "allow", "allowfullscreen"],
-            //script: ["async", "src", "charset"]
-        },
-    });
-}
-
-//Helper function to filter and leave only the images or videos if any for the thumbnails.
-function thumbHTML(html, { allowedTags } = { allowedTags: [] }) {
-
-    // guard against characters that have jank rendering
-    // note: this was commented out since we now guard using overflow hidden
-    //html = html.replace(/([\u0300-\u036F]|[\uD800-\uDFFF]|[\u1E00-\u1EFF]|[\u2300-\u23FF]|[\u0E00-\u0E7F])+/g, ' ');
-
-    return _sanitizeHTML(html, {
-        allowedTags: [
-            "span",
-            "em",
-            "strike",
-            "center",
-            "hr",
-            "br",
             "tr",
             "th",
             "td",
@@ -341,8 +251,6 @@ export {
     createDOMParser,
     parseDocument,
     sanitizeHTML,
-    thumbHTML,
-    thumbImgHTML,
     isVisible,
     getActionCommitment,
     tryParseJson,

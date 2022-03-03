@@ -17,6 +17,8 @@
   "ActionGatewayController": {
     "constructor": "ActionGatewayController.constructor",
     "flagNsfwPost": "ActionGatewayController.flagNsfwPost",
+    "voteProposal": "ActionGatewayController.voteProposal",
+    "submitProposal": "ActionGatewayController.submitProposal",
     "ignorePost": "ActionGatewayController.ignorePost",
     "blockUser": "ActionGatewayController.blockUser",
     "followUser": "ActionGatewayController.followUser",
@@ -53,6 +55,7 @@
     "getBlocked": "SearchGatewayController.getBlocked",
     "getFollow": "SearchGatewayController.getFollow",
     "getPopularCommunities": "SearchGatewayController.getPopularCommunities",
+    "getProposals": "SearchGatewayController.getProposals",
     "getPopularUsers": "SearchGatewayController.getPopularUsers",
     "getFollowReccomendations": "SearchGatewayController.getFollowReccomendations",
     "getNotifications": "SearchGatewayController.getNotifications",

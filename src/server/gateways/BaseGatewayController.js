@@ -142,6 +142,7 @@ export default class BaseGatewayController {
         const notifications = dbo.collection(ServerConfig.mongodb.collections.notifications);
         const messages = dbo.collection(ServerConfig.mongodb.collections.messages);
         const communities = dbo.collection(ServerConfig.mongodb.collections.communities);
+        const proposals = dbo.collection(ServerConfig.mongodb.collections.proposals);
 
         let accountDBO = null;
         if (account) {
@@ -156,7 +157,7 @@ export default class BaseGatewayController {
             dbo,
             actions, posts, accounts,
             oauths, hashtags, notifications, 
-            messages, communities,
+            messages, communities, proposals,
             account: accountDBO
         };
     }

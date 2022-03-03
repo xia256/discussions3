@@ -1,6 +1,6 @@
 <template>
   <v-app-bar
-    class="pl-0 appbar"
+    class="pl-0"
     :hide-on-scroll="isMobile && !isSafari"
     v-bind="$attrs"
     :app="true"
@@ -298,9 +298,3 @@ export default {
   },
 };
 </script>
-
-<style>
-.appbar {
-  margin-top: 20px;
-}
-</style>

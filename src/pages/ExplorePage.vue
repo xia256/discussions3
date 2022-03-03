@@ -1,9 +1,5 @@
 <template>
-  <!--%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%-->
-  <!--%%%%%%%%%%%%%%%%%%%%%%  POSTS GET LOADED HERE %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%-->
-  <!--%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%-->
   <div>
-  
     <v-row>
       <v-col :cols="12">
         <v-card flat>
@@ -47,14 +43,12 @@
             :transition="false"
             :reverse-transition="false"
           >
-            
             <PostScroller
               v-if="tabName == 'popular'"
               ref="cursor"
               no-submitter
               :advance-cursor="getExplorePosts"
             />
-            
           </v-tab-item>
           <v-tab-item
             v-if="tabExists('trending')"
@@ -100,7 +94,6 @@
         </v-tabs-items>
       </v-col>
     </v-row>
-    
   </div>
 </template>
 
@@ -170,7 +163,6 @@ export default {
         sort: "popular",
       });
     },
-    //Loads the posts from the Explore window.
     async getExplorePosts({ cursorId }) {
       return await api.Search.getFeedPosts({
         cursorId: cursorId,

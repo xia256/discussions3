@@ -15,7 +15,6 @@
       ref="cursor"
       :advance-cursor="advanceCursorInternal"
     >
-
       <template v-slot:content="{ items }">
         <v-row
           v-for="(post, i) in items"
@@ -23,91 +22,17 @@
           no-gutters
         >
           <v-col :cols="12">
-            <!--%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-            %%%%%%%% MODIFIED HERE FOR VIEWS %%%%%%%
-            %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%-->
-            <div v-if="discView == 'Classic'">
-                <!--%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                %%%% IMPORTANT - THIS LOADS THE POSTS %%%
-                %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%-->
-                <Post
-                  class="mb-2"
-                  flat
-                  outlined
-                  :max-replies="2"
-                  :post="post.replyContext ? post.replyContext : post"
-                  :force-override-block="forceOverrideBlock"
-                />
-
-            </div>
-
-            <!--%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%-->
-            <!--This will load the Reddit like view-->
-            <!--%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%-->
-            <div v-if="discView == 'Light'">
-                <v-col :cols="12">
-                  <div class="container">
-                      <div class="leftPost">
-                         <v-btn
-                            text
-                            small
-                            dense
-                            class="pa-0"
-                            :color="post.isLiked ? 'red' : 'tertiary'"
-                            @click="likePost(post)"
-                          >
-                            <v-icon>mdi-heart-outline</v-icon>
-                            <span v-if="!settings.neutralEngagement">{{
-                              post.totalLikes
-                            }}</span>
-                          </v-btn>
-
-                          <!--Show the number of upvotes-->
-                          {{ post.totalReplies }}
-
-                          <!--Add image and video thumbnails-->
-                          <!--TODO: Fix this by finding some way to load the thumbnail from the server.-->
-                          <div v-if="0 === 1">
-                            <PostImgThumb :post="post.replyContext ? post.replyContext : post"></PostImgThumb>
-                          </div>
-
-                      </div>
-
-                      <div class="rightPost">
-
-                          <!--Show if post has been tipped-->
-                          <div v-if="post.tips.length > 0" class="mb-1">
-                            <PostTips :tips="post.tips" />
-                          </div>
-
-                          <!--Show post title or content-->
-                          <div @click="openThread(post)">
-                              <h4 v-if="post.title">{{ post.title }}</h4>
-                              <!--TODO: Load only the excerpt from the post.content here if there's no title-->
-                              <h4 v-if="!post.title">
-                                <!--This control loads a small excerpt from a post without starting header/title.-->
-                                <PostThumb :post="post.replyContext ? post.replyContext : post"></PostThumb>
-                              </h4>
-                              <!--Display what community the post belongs to-->
-
-                              <PostCommunity :post="post.replyContext ? post.replyContext : post"></PostCommunity>
-                          </div>
-
-                          <!--Show username of the poster-->
-                          <span>@{{ post.username }}</span>
-                          <span>
-                            <PostDate :post="post.replyContext ? post.replyContext : post"></PostDate>
-                          </span>
-
-                      </div>
-                  </div>
-                </v-col>
-            </div>
-
+            <Post
+              class="mb-2"
+              flat
+              outlined
+              :max-replies="2"
+              :post="post.replyContext ? post.replyContext : post"
+              :force-override-block="forceOverrideBlock"
+            />
           </v-col>
         </v-row>
       </template>
-
     </SearchCursor>
   </div>
 </template>
@@ -120,25 +45,9 @@ import { PostObject } from "../server/api/objects";
 
 //import { delay } from "../utility";
 
-//Action Commitment for the likePost utility.
-import { getActionCommitment } from "../utility";
-import PostTips from "./PostTips";
-
 import SearchCursor from "../components/SearchCursor";
 import Post from "../components/Post";
 import PostSubmitter from "../components/PostSubmitter";
-
-//Import to get short Post Date.
-import PostDate from "../components/PostDate";
-//Import to load partial content from the text in case there's no title.
-import PostThumb from "../components/PostThumb.vue";
-//Import to load Image Thumbnail for those that have it.
-import PostImgThumb from "../components/PostImgThumb.vue";
-//Import to load Community link.
-import PostCommunity from "../components/PostCommunity.vue";
-
-//Server API to make calls to the backend.
-import api from "../server/api";
 
 export default {
   name: "PostScroller",
@@ -146,29 +55,15 @@ export default {
     SearchCursor,
     Post,
     PostSubmitter,
-    PostTips,
-    PostDate,
-    PostThumb,
-    PostImgThumb,
-    PostCommunity,
   },
   mixins: [mixins.Common, mixins.SubmitPost],
   props: {
-    post: { type: PostObject, default: null },
     advanceCursor: { type: Function, required: true },
     noSubmitter: { type: Boolean, default: false },
     forceOverrideBlock: { type: Boolean, default: false },
   },
   data: () => ({}),
   computed: {
-    discView(){
-      //TODO: Currently this doesn't load the discView settings that we made commit to in the SettingsPage and the button. Need to find a way to fix that.
-      console.log(this.settings);
-      if(!this.settings.discussionsView){
-        return "Classic"
-      }
-      return this.settings.discussionsView;
-    },
     ...mapState(['submittedPost'])
   },
   watch: {
@@ -246,67 +141,7 @@ export default {
 
         return { cursorId, results: append };
       });
-    },
-
-    //Function to like a published post without having to open it.
-    async likePost(post) {
-      if (this.requireLoginDialog()) return;
-      if (this.waiting) return;
-                                                                                 
-      const identityKey = this.keyManager.keys["identity"];
-
-      //TO DEBUG:
-      /*
-      console.log("IDENTITY KEY:");
-      console.log(identityKey);
-
-
-      console.log("POST IDENTITY KEY:");
-      console.log(post.identityPublicKey);
-      */
-      
-      //If the user is upvoting itself or the post is already liked.
-      if (post.identityPublicKey == identityKey.pub && this.post.isLiked)
-        //Do nothing.
-        return;
-
-      await this.wait(async () => {
-        const inverted = post.isLiked ? false : true;
-                                                                                 
-        // be optimistic about this and set it before signing and api call
-        post.isLiked = inverted;
-        post.totalLikes += inverted ? 1 : -1;
-                                                                                 
-        const args = {
-          identityPublicKey: identityKey.pub,
-          postId: post.id,
-          value: inverted,
-          nonce: Date.now(),
-        };
-                                                                                 
-        const commitment = await getActionCommitment({ name: "like", ...args });
-        const signature = await identityKey.signText(commitment);
-                                                                                 
-        await api.Action.likePost({
-          signature,
-          ...args,
-        });
-      });
-
-    },
-
+    }
   },
 };
 </script>
-
-<style lang="scss">
-.container{
-  display: flex;
-}
-.leftPost {
-  width: 20%;
-}
-.rightPost {
-  width: 70%;
-}
-</style>

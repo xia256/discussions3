@@ -14,19 +14,17 @@ export default {
     },
     computed: {
         layoutLeftStyle() {
-            return this.isMDPI ? `` : `width: 205px`;
+            return this.isMDPI ? `` : `width: 275px`;
         },
         layoutMiddleStyle() {
             let middleWidthSize = '975px';
             if (this.isMobile) middleWidthSize = "100%";
-
-            //This is modified to extend or reduce the width of the content displayed on posts.
-            if (this.layout.showRight) middleWidthSize = "850px";
+            if (this.layout.showRight) middleWidthSize = "600px";
 
             return `min-width: ${middleWidthSize}; max-width: ${middleWidthSize};`;
         },
         layoutRightStyle() {
-            return `width: 200px`;
+            return `width: 375px`;
         }
     },
     created() {
