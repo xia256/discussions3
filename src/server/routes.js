@@ -10,6 +10,10 @@ export default [
         name: "standalonecard"
     },
     {
+        path: '/vote',
+        component: 'VotePage',
+    },
+    {
         path: '/console',
         component: 'ConsolePage',
     },

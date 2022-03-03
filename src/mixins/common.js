@@ -29,6 +29,11 @@ export default {
         selfIdentityPublicKey() {
             return this.selfIdentityKey?.pub;
         },
+        selfWalletPublicKey() {
+            if (!this.keyManager) return undefined;
+            const walletKey = this.keyManager.keys['wallet'];
+            return walletKey?.pub;
+        },
         isGlobalModerator() {
             return this.selfIdentityPublicKey ? ServerConfig.globalModerators.includes(this.selfIdentityPublicKey) : false;
         },

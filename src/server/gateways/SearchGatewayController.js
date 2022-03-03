@@ -537,6 +537,22 @@ class SearchGatewayController extends BaseGatewayController {
         });
     }
 
+    async getProposals({ cursorId }) {
+        return await this.#consumeCursor(cursorId, SEARCH_RETURN_LIMIT, async () => {
+            const { proposals } = await this.getDBO();
+
+            const pipeline = [
+                {
+                    $match: {
+                        expires: { $gte: Date.now() }
+                    }
+                }
+            ];
+
+            return await proposals.aggregate(pipeline);
+        });
+    }
+
     async getPopularUsers({ cursorId }) {
         return await this.#consumeCursor(cursorId, SEARCH_RETURN_LIMIT, async () => {
             const identityPublicKey = this.identityPublicKey;

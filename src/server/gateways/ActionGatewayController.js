@@ -7,6 +7,12 @@ import { updateUserIdentity } from "../mongodb";
 
 import GatewayServer from "../gateways/GatewayServer";
 
+import ServerConfig from "../server.config";
+import ecc from 'eosjs-ecc';
+import { Api, JsonRpc } from "eosjs";
+import { JsSignatureProvider } from "eosjs/dist/eosjs-jssig";
+import fetch from "node-fetch";
+
 import {
     mentionRegex,
     parseDocument,
@@ -102,6 +108,95 @@ class ActionGatewayController extends BaseGatewayController {
             }
 
             return value;
+        });
+    }
+
+    async voteProposal({ identityPublicKey, postId, expires, type }) {
+        this.requireIdentity(identityPublicKey);
+        this.validateUUID(postId);
+
+        if (type != 'support' && type != 'against' && type != 'abstain')
+            throw new Error(`Invalid support type: ${type}`);
+
+        const { account, proposals } = await this.getDBO({ account: true });
+        const walletPublicKey = account.walletPublicKey;
+
+        // remove an existing vote
+        await proposals.updateOne({ postId, expires }, {
+            $pull: {
+                support: walletPublicKey,
+                abstain: walletPublicKey,
+                against: walletPublicKey
+            }
+        });
+
+        // re-push the vote
+        await proposals.updateOne({ postId, expires }, {
+            $push: {
+                [type]: walletPublicKey
+            }
+        });
+
+        return true;
+    }
+
+    async submitProposal({ identityPublicKey, postId, title }) {
+        this.requireIdentity(identityPublicKey);
+        this.validateUUID(postId);
+        if (!title || title.length < 5) throw new Error(`Title is too short`);
+        if (title.length > 64) throw new Error(`Title is too long`);
+
+        const { proposals, account } = await this.getDBO({ account: true });
+        console.log(account.walletPublicKey);
+
+        const signatureProvider = new JsSignatureProvider([]);
+        const api = new Api({
+            rpc: new JsonRpc(ServerConfig.crypto.eos.rpc, { fetch }),
+            signatureProvider,
+            textDecoder: new TextDecoder(),
+            textEncoder: new TextEncoder(),
+        });
+
+        const bound = `0x${ecc.sha256(ecc.PublicKey.fromString(account.walletPublicKey).toBuffer(), 'hex')}`;
+        const stakeAccounts = await api.rpc.get_table_rows({
+            json: true,
+            code: `atmosstakev2`,
+            scope: '3,ATMOS',
+            table: 'accounts',
+            limit: 100,
+            key_type: 'i256',
+            lower_bound: bound,
+            upper_bound: bound,
+            index_position: 2,
+        });
+
+        const weight = (stakeAccounts?.rows?.length > 0) ? parseInt(stakeAccounts.rows[0].total_weight) : 0;
+        const MIN_WEIGHT = 52559900; // 1000 ATMOS @ 1y
+        if (weight < MIN_WEIGHT)
+            throw new Error(`You need to have a staking weight of at least 52559900 (i.e. 1000 ATMOS for 1 year)`);
+
+        return await this.lockAccount(async () => {
+
+            const count = await proposals
+                .find({ identityPublicKey, expires: { $gte: Date.now() } })
+                .count();
+
+            const MAX_PROPOSALS = 3;
+            if (count >= MAX_PROPOSALS)
+                throw new Error(`You may only have a maximum of ${MAX_PROPOSALS} active proposals`);
+
+            await proposals.insertOne({
+                identityPublicKey,
+                username: account.username,
+                postId,
+                title,
+                expires: Date.now() + (14 * 24 * 60 * 60 * 1000), // 2 weeks
+                support: [account.walletPublicKey],
+                against: [],
+                abstain: []
+            });
+
+            return true;
         });
     }
 
@@ -386,7 +481,7 @@ class ActionGatewayController extends BaseGatewayController {
             if (isEdit) {
                 delete (postDbo.likes);
             }
-            
+
             const { value: dboPost } = await posts.findOneAndUpdate(
                 { id },
                 {

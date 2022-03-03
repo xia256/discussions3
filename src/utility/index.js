@@ -26,7 +26,7 @@ function shortDateString(date) {
     const DAY = 24 * HOUR;
     const YEAR = 365 * DAY;
 
-    const delta = Date.now() - date.getTime();
+    const delta = Math.abs(Date.now() - date.getTime());
     if (delta < MINUTE) return `${Math.max(1, Math.floor(delta / SECOND))}s`;
     if (delta < HOUR) return `${Math.max(1, Math.floor(delta / MINUTE))}m`;
     if (delta < DAY) return `${Math.max(1, Math.floor(delta / HOUR))}h`;

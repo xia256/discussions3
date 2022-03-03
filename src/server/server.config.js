@@ -58,7 +58,8 @@ const config = {
             hashtags: "hashtags",
             notifications: "notifications",
             messages: "messages",
-            communities: "communities"
+            communities: "communities",
+            proposals: "proposals"
         },
         indexes: {
             oauths: [

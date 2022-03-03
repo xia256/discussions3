@@ -21,6 +21,7 @@ import SearchPage from '../pages/SearchPage';
 import ViewCommunityPage from '../pages/ViewCommunityPage';
 import SettingsPage from '../pages/SettingsPage';
 import ConsolePage from '../pages/ConsolePage';
+import VotePage from '../pages/VotePage';
 
 // Standalone
 import StandAloneCardPage from '../pages/standalone/CardPage';
@@ -45,6 +46,7 @@ const Components = {
     SearchPage,
     SettingsPage,
     ConsolePage,
+    VotePage,
     // Standalone
     StandAloneCardPage
 }
