@@ -1,22 +1,12 @@
 <template>
   <router-view v-if="standalone" />
   <v-app v-else>
-
-    <!--This is the app bar that loads the logo, profile buttons and other stuff from the main user-->
-
-    <div
-      class="DiscussionsAppBar"
-      >
-
     <AppBar
       v-if="!isOEmbed"
       v-show="serverConnected"
       flat
       @drawer="showLeftDrawer = true"
-
     />
-    </div>
-    <!--%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%-->
 
     <!-- drawers are only used on mobile ui -->
     <v-navigation-drawer
@@ -50,9 +40,6 @@
     <MentionListPopover ref="mentionList" />
     <ProfilePopover />
 
-    <!--%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %%%%%%%%%%%%%%%%%%%%%%    MAIN APP CONTENT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%-->
     <v-main>
       <v-container
         fluid
@@ -71,7 +58,6 @@
               style="position: sticky; top: 64px"
             >
               <div :style="layoutLeftStyle">
-                <!--Left side menu for the app navigation with config.-->
                 <AppNavigation :icon-only="isMDPI" />
               </div>
             </div>
@@ -82,22 +68,12 @@
           >
             <v-row no-gutters>
               <v-col :style="layoutMiddleStyle">
-                <!--%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-                This is what loads the content of the blockchain.
-                %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%-->
                 <router-view v-show="serverConnected" />
-                
               </v-col>
               <v-col v-show="layout.showRight">
                 <div style="position: sticky; top: 64px">
                   <div :style="layoutRightStyle">
-
-                    <!--This section loads the YOU MIGHT LIKE AND TRENDING ELEMENTS. I think it
-                    could benefit from connecting Discussions to an RSS feed or similar to keep
-                    the users interested when things are slow. Otherwise it doesn't serve much of
-                    a purpose yet.-->
                     <AppRightContent />
-
                   </div>
                 </div>
               </v-col>
@@ -106,12 +82,10 @@
         </v-row>
       </v-container>
     </v-main>
-    
   </v-app>
 </template>
 
 <style lang="scss">
-
 .embedly-card {
   .embedly-card-hug {
     margin: unset !important;
@@ -151,11 +125,6 @@
 
 .row {
   margin: 0px;
-}
-
-.DiscussionsAppBar {
-  margin: 10px;
-  width: 100%;
 }
 
 html,
@@ -239,7 +208,6 @@ export default {
   watch: {
     $route() {
       if (!this.isMobile) {
-        //Watches the layout in case of Desktop app.
         this.layout.showRight = this.$route.meta?.hideRight ? false : true;
       }
     },
@@ -283,10 +251,8 @@ export default {
     api.addEventListener("directMessage", this.receiveDirectMessage);
 
     if (api.isReady) {
-      //Verify if the server is online, otherwise...
       this.serverConnected = true;
     } else {
-      //Wait for the app to get online.
       await api.connect();
     }
   },

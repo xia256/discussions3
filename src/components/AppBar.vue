@@ -1,6 +1,6 @@
-<template width="100%">
+<template>
   <v-app-bar
-    class="pl-0 appbar"
+    class="pl-0"
     :hide-on-scroll="isMobile && !isSafari"
     v-bind="$attrs"
     :app="true"
@@ -41,7 +41,7 @@
           <div :style="layoutLeftStyle">
             <div :style="`padding: 0 ${isMDPI ? 16 : 8}px`">
               <v-btn
-                class="text-h6 appbar"
+                class="text-h6"
                 btn
                 text
                 plain
@@ -298,9 +298,3 @@ export default {
   },
 };
 </script>
-
-<style>
-.appbar {
-  margin-top: 20px;
-}
-</style>

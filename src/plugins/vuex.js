@@ -32,11 +32,7 @@ function getDefaultSettings(isLoggedIn) {
         blurNsfw: true,
         neutralEngagement: false,
         likeNotifications: true,
-        blockedTags: [],
-        //Modified to send the personalized settings to the user.
-        discussionsView: "Classic",
-        //Modified to send personalized post order to the user.
-        postSort: "popular",
+        blockedTags: []
     }
 }
 
@@ -120,14 +116,12 @@ export default new Vuex.Store({
             state.account.loggedIn = true;
 
             // settings
-            const { allowNsfw, blurNsfw, neutralEngagement, likeNotifications, blockedTags, discussionsView, postSort } = Object.assign(getDefaultSettings(true), account.settings ?? {});
+            const { allowNsfw, blurNsfw, neutralEngagement, likeNotifications, blockedTags } = Object.assign(getDefaultSettings(true), account.settings ?? {});
             state.settings.allowNsfw = allowNsfw;
             state.settings.blurNsfw = blurNsfw;
             state.settings.neutralEngagement = neutralEngagement;
             state.settings.likeNotifications = likeNotifications;
             state.settings.blockedTags = blockedTags;
-            state.settings.discussionsView = discussionsView;
-            state.settings.postSort = postSort;
         },
         logout(state) {
             const defaultState = getDefaultState();

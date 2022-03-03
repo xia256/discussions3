@@ -1,8 +1,4 @@
-# Discussions 3.0
-
-## What is Discussions?
-
-Discussions is the free blockchain based social network whose goal is to provide a space to share and discuss ideas free from censorship and protecting user privacy.
+# Discussiosn 3.0
 
 ## Client setup
 ```
