@@ -47,8 +47,8 @@ class ApiClient extends EventTarget {
     async connect() {
         if (this.socket) return;
 
-        //const host = ServerConfig.url;
-        const host = 'http://192.168.0.11:5015';
+        const host = ServerConfig.url;
+        //const host = 'http://192.168.0.11:5015';
         console.log(`Trying to connect to ${host}...`);
 
         const socket = io(host, {});
