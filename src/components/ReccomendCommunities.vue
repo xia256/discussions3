@@ -11,6 +11,10 @@
           flat
         >
           <v-card-text>
+            <!--This displays the data about each community.-->
+            <!--
+              {{ c }}
+            -->
             <CommunityInfo :value="c" />
           </v-card-text>
         </v-card>
@@ -29,14 +33,15 @@ import SearchCursor from "../components/SearchCursor";
 import CommunityInfo from "../components/CommunityInfo";
 
 export default {
-  name: "ReccomendUsers",
+  name: "ReccomendCommunities",
   components: {
     SearchCursor,
     CommunityInfo,
   },
   mixins: [mixins.Common],
   props: {},
-  data: () => ({}),
+  data: () => ({
+  }),
   computed: {},
   watch: {},
   async created() {},
@@ -47,9 +52,16 @@ export default {
       return await this.$refs.cursor.resetCursor();
     },
     async getPopularCommunities({ cursorId }) {
+      const communityData = await api.Search.getPopularCommunities({
+        cursorId: cursorId,
+      });
+
+      return communityData;
+      /*
       return await api.Search.getPopularCommunities({
         cursorId: cursorId,
       });
+      */
     },
   },
 };

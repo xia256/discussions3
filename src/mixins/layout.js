@@ -14,17 +14,23 @@ export default {
     },
     computed: {
         layoutLeftStyle() {
-            return this.isMDPI ? `` : `width: 275px`;
+            let leftWidthStyle = '205px';
+            if (this.isMobile) leftWidthStyle = '0px';
+            return this.isMDPI ? `` : `width: ${leftWidthStyle}px`;
         },
         layoutMiddleStyle() {
             let middleWidthSize = '975px';
             if (this.isMobile) middleWidthSize = "100%";
-            if (this.layout.showRight) middleWidthSize = "600px";
+
+            //This is modified to extend or reduce the width of the content displayed on posts.
+            if (this.layout.showRight) middleWidthSize = "850px";
 
             return `min-width: ${middleWidthSize}; max-width: ${middleWidthSize};`;
         },
         layoutRightStyle() {
-            return `width: 375px`;
+            let rightWidthSize = '200px';
+            if (this.isMobile) rightWidthSize = "0px";
+            return `width: ${rightWidthSize};`;
         }
     },
     created() {
@@ -35,7 +41,9 @@ export default {
             const layout = this.layout;
             if (this.isMobile) {
                 layout.showLeft = false;
-                layout.middleRightCols = 12;
+                layout.leftCols = 1;
+                //Modified to 9 to make space in mobile.
+                layout.middleRightCols = 9;
                 layout.showRight = false;
             }
             else if (this.is4K) {

@@ -469,7 +469,10 @@ class SearchGatewayController extends BaseGatewayController {
                 },*/
                 ...projectPostPipeline(account?.identityPublicKey)
             ];
-            return await posts.aggregate(pipeline);
+            return await posts.aggregate(pipeline, {
+                //To prevent out of memory issue with MongoDB.
+                allowDiskUse: true
+            });
         });
     }
 
@@ -1020,9 +1023,11 @@ function projectAccountPipeline(identityPublicKey) {
     return pipeline;
 }
 
+//Function to sort the feed posts in different arrangements.
 function sortPipeline(sort) {
     sort = sort.toLowerCase();
 
+    //Posting the most recent created post.
     if (sort == 'recent') {
         return [
             {
@@ -1033,6 +1038,7 @@ function sortPipeline(sort) {
             }
         ];
     }
+    //Sort the most recently liked posts.
     else if (sort == 'popular') {
         const G = 1.8;
         const now = Date.now();

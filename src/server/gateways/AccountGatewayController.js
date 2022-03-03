@@ -70,7 +70,9 @@ class AccountGatewayController extends BaseGatewayController {
         blurNsfw,
         neutralEngagement,
         likeNotifications,
-        blockedTags
+        blockedTags,
+        discussionsView,
+        postSort,
     }) {
 
         const identityPublicKey = this.identityPublicKey;
@@ -87,7 +89,9 @@ class AccountGatewayController extends BaseGatewayController {
                         blurNsfw,
                         neutralEngagement,
                         likeNotifications,
-                        blockedTags
+                        blockedTags,
+                        discussionsView,
+                        postSort,
                     }
                 }
             }

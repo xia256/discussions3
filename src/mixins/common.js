@@ -281,6 +281,21 @@ export default {
                 }
             }
             return transfers;
-        }
+        },
+        //Added in order to easily update one single setting 
+        async updateSingleSetting(name, value, save=true){
+            //Load Settings from server.
+            const settings = this.settings;
+            if ((typeof settings[name]) == undefined) throw new Error(`Unknown setting ${name}`);
+            settings[name] = value;
+            
+            //Commit the configuration value.
+            this.$store.commit("set", ["settings", settings]);
+            if (!save) return true;
+
+            const result = await api.Account.saveSettings(settings);
+            console.log(`Saved`, result, settings);
+            return result;
+        },
     }
 };
