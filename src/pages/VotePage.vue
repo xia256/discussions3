@@ -121,8 +121,8 @@ export default {
   props: {},
   data: () => ({
     tabIndex: 0,
-    url: "https://discussions.app/p/Mucan/3jlubsmqw18gc/winter-anime-2022-in-nutshell",
-    title: "Test proposal",
+    url: "",
+    title: "",
     resultText: "",
     stakes: null,
   }),

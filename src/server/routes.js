@@ -12,6 +12,7 @@ export default [
     {
         path: '/vote',
         component: 'VotePage',
+        name: "vote"
     },
     {
         path: '/console',

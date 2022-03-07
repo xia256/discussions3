@@ -1,9 +1,5 @@
 <template>
-  <v-card
-    flat
-    tile
-    v-bind="$attrs"
-  >
+  <v-card flat tile v-bind="$attrs">
     <v-card-text class="pa-0">
       <v-list>
         <v-list-item v-if="isMobile">
@@ -19,21 +15,14 @@
             @keydown.enter="textSearch"
           >
             <template v-slot:append>
-              <v-btn
-                small
-                dense
-                icon
-              >
+              <v-btn small dense icon>
                 <v-icon>mdi-magnify</v-icon>
               </v-btn>
             </template>
           </v-text-field>
         </v-list-item>
         <v-list-item v-if="!isLoggedIn">
-          <ToolTip
-            text="Login"
-            :condition="isMDPI"
-          >
+          <ToolTip text="Login" :condition="isMDPI">
             <template v-slot:activator="{ show, hide }">
               <v-btn
                 class="text-h6 justify-start"
@@ -44,19 +33,13 @@
                 @click="openDialog('login')"
               >
                 <v-icon>mdi-login</v-icon>
-                <span
-                  v-show="!iconOnly"
-                  class="ml-5"
-                >Login</span>
+                <span v-show="!iconOnly" class="ml-5">Login</span>
               </v-btn>
             </template>
           </ToolTip>
         </v-list-item>
         <v-list-item>
-          <ToolTip
-            text="Home"
-            :condition="isMDPI"
-          >
+          <ToolTip text="Home" :condition="isMDPI">
             <template v-slot:activator="{ show, hide }">
               <v-btn
                 :to="'/'"
@@ -67,19 +50,13 @@
                 @mouseleave="hide"
               >
                 <v-icon>mdi-home</v-icon>
-                <span
-                  v-show="!iconOnly"
-                  class="ml-5"
-                >Home</span>
+                <span v-show="!iconOnly" class="ml-5">Home</span>
               </v-btn>
             </template>
           </ToolTip>
         </v-list-item>
         <v-list-item v-if="isLoggedIn && isMobile">
-          <ToolTip
-            text="Notifications"
-            :condition="isMDPI"
-          >
+          <ToolTip text="Notifications" :condition="isMDPI">
             <template v-slot:activator="{ show, hide }">
               <v-btn
                 class="text-h6 justify-start"
@@ -98,19 +75,13 @@
                 >
                   <v-icon>mdi-bell</v-icon>
                 </v-badge>
-                <span
-                  v-show="!iconOnly"
-                  class="ml-5"
-                >Notifications</span>
+                <span v-show="!iconOnly" class="ml-5">Notifications</span>
               </v-btn>
             </template>
           </ToolTip>
         </v-list-item>
         <v-list-item v-if="isLoggedIn && isMobile">
-          <ToolTip
-            text="Messenger"
-            :condition="isMDPI"
-          >
+          <ToolTip text="Messenger" :condition="isMDPI">
             <template v-slot:activator="{ show, hide }">
               <v-btn
                 class="text-h6 justify-start"
@@ -129,19 +100,13 @@
                 >
                   <v-icon>mdi-message</v-icon>
                 </v-badge>
-                <span
-                  v-show="!iconOnly"
-                  class="ml-5"
-                >Messages</span>
+                <span v-show="!iconOnly" class="ml-5">Messages</span>
               </v-btn>
             </template>
           </ToolTip>
         </v-list-item>
         <v-list-item v-if="isLoggedIn">
-          <ToolTip
-            text="Profile"
-            :condition="isMDPI"
-          >
+          <ToolTip text="Profile" :condition="isMDPI">
             <template v-slot:activator="{ show, hide }">
               <v-btn
                 class="text-h6 justify-start"
@@ -155,19 +120,13 @@
                 @mouseleave="hide"
               >
                 <v-icon>mdi-account</v-icon>
-                <span
-                  v-show="!iconOnly"
-                  class="ml-5"
-                >Profile</span>
+                <span v-show="!iconOnly" class="ml-5">Profile</span>
               </v-btn>
             </template>
           </ToolTip>
         </v-list-item>
         <v-list-item v-if="isLoggedIn">
-          <ToolTip
-            text="Wallet"
-            :condition="isMDPI"
-          >
+          <ToolTip text="Wallet" :condition="isMDPI">
             <template v-slot:activator="{ show, hide }">
               <v-btn
                 class="text-h6 justify-start"
@@ -178,19 +137,13 @@
                 @mouseleave="hide"
               >
                 <v-icon>mdi-wallet</v-icon>
-                <span
-                  v-show="!iconOnly"
-                  class="ml-5"
-                >Wallet</span>
+                <span v-show="!iconOnly" class="ml-5">Wallet</span>
               </v-btn>
             </template>
           </ToolTip>
         </v-list-item>
         <v-list-item v-if="isLoggedIn">
-          <ToolTip
-            text="Logout"
-            :condition="isMDPI"
-          >
+          <ToolTip text="Logout" :condition="isMDPI">
             <template v-slot:activator="{ show, hide }">
               <v-btn
                 text
@@ -200,10 +153,7 @@
                 @click="logout"
               >
                 <v-icon>mdi-logout</v-icon>
-                <span
-                  v-show="!iconOnly"
-                  class="ml-5"
-                >Logout</span>
+                <span v-show="!iconOnly" class="ml-5">Logout</span>
               </v-btn>
             </template>
           </ToolTip>
@@ -211,10 +161,7 @@
         <v-list-item v-if="isLoggedIn">
           <v-menu offset-y>
             <template v-slot:activator="{ on, attrs }">
-              <ToolTip
-                text="More"
-                :condition="isMDPI"
-              >
+              <ToolTip text="More" :condition="isMDPI">
                 <template v-slot:activator="{ show, hide }">
                   <v-btn
                     class="text-h6 justify-start"
@@ -226,58 +173,40 @@
                     v-on="on"
                   >
                     <v-icon>mdi-dots-horizontal-circle-outline</v-icon>
-                    <span
-                      v-show="!iconOnly"
-                      class="ml-5"
-                    >More</span>
+                    <span v-show="!iconOnly" class="ml-5">More</span>
                   </v-btn>
                 </template>
               </ToolTip>
             </template>
             <v-list>
               <v-list-item v-if="isLoggedIn">
-                <v-btn
-                  text
-                  block
-                  :to="{ name: 'settings' }"
-                >
-                  <v-icon class="mr-2">
-                    mdi-cog
-                  </v-icon>
+                <v-btn text block :to="{ name: 'settings' }">
+                  <v-icon class="mr-2"> mdi-cog </v-icon>
                   <span>Settings</span>
                 </v-btn>
               </v-list-item>
               <v-list-item v-if="isLoggedIn">
-                <v-btn
-                  text
-                  block
-                  :to="{ name: 'moderation' }"
-                >
-                  <v-icon class="mr-2">
-                    mdi-human-edit
-                  </v-icon>
+                <v-btn text block :to="{ name: 'moderation' }">
+                  <v-icon class="mr-2"> mdi-human-edit </v-icon>
                   <span>Moderation</span>
                 </v-btn>
               </v-list-item>
               <v-list-item v-if="isLoggedIn">
-                <v-btn
-                  text
-                  block
-                  :to="{ name: 'community' }"
-                >
-                  <v-icon class="mr-2">
-                    mdi-account-group
-                  </v-icon>
+                <v-btn text block :to="{ name: 'community' }">
+                  <v-icon class="mr-2"> mdi-account-group </v-icon>
                   <span>Community</span>
+                </v-btn>
+              </v-list-item>
+              <v-list-item v-if="isLoggedIn">
+                <v-btn text block :to="{ name: 'vote' }">
+                  <v-icon class="mr-2"> mdi-vote </v-icon>
+                  <span>Governance</span>
                 </v-btn>
               </v-list-item>
             </v-list>
           </v-menu>
         </v-list-item>
-        <v-list-item
-          v-if="isLoggedIn"
-          class="mt-4"
-        >
+        <v-list-item v-if="isLoggedIn" class="mt-4">
           <v-btn
             rounded
             color="primary"
