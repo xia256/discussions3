@@ -537,14 +537,25 @@ class SearchGatewayController extends BaseGatewayController {
         });
     }
 
-    async getProposals({ cursorId }) {
+    async getSingleProposal({ username, expires }) {
+        const { proposals } = await this.getDBO();
+        //console.log(`Searching proposal`, username, expires);
+
+        return await proposals.findOne({
+            username,
+            expires: parseInt(expires)
+        });
+    }
+
+    async getProposals({ cursorId, history }) {
+
         return await this.#consumeCursor(cursorId, SEARCH_RETURN_LIMIT, async () => {
             const { proposals } = await this.getDBO();
 
             const pipeline = [
                 {
                     $match: {
-                        expires: { $gte: Date.now() }
+                        expires: history ? { $lte: Date.now() } : { $gte: Date.now() }
                     }
                 }
             ];
