@@ -144,7 +144,7 @@ export default {
       trending: "mdi-pound",
       users: "mdi-account-multiple-plus",
       community: "mdi-account-group",
-      faq: "mdi-account-group"
+      faq: "mdi-rss"
     },
   }),
   computed: {
