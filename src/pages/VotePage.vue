@@ -6,15 +6,25 @@
           <v-card-text class="pt-0 pb-0">
             <v-tabs v-model="tabIndex">
               <v-tab>Vote</v-tab>
+              <v-tab>History</v-tab>
               <v-tab>Create</v-tab>
+              <v-tab style="display: none"></v-tab>
             </v-tabs>
           </v-card-text>
         </v-card>
       </v-col>
     </v-row>
-    <v-row v-if="tabIndex == 1">
+    <v-row v-if="tabIndex == 2">
       <v-col :cols="12">
         <v-row no-gutters>
+          <v-col :cols="12">
+            <p class="text-center">
+              You have a voting power of <strong>{{ votePower }} VP</strong> you
+              can obtain more by staking ATMOS. To create a proposal, you must
+              have a voting power of at least 1 which is the equivalent of 1000
+              ATMOS staked for 1 year.
+            </p>
+          </v-col>
           <v-col :cols="12">
             <v-text-field
               v-model="title"
@@ -51,52 +61,40 @@
         </v-row>
       </v-col>
     </v-row>
-    <v-row v-if="tabIndex == 0">
+    <v-row v-else-if="tabIndex == 0 && stakes">
       <v-col :cols="12">
         <SearchCursor ref="cursor" top :advance-cursor="getProposals">
           <template v-slot:content="{ items }">
             <div v-for="(prop, i) in items" :key="i" class="mb-2">
-              <v-card outlined>
-                <v-card-title>{{ prop.title }}</v-card-title>
-                <v-card-subtitle>
-                  Expires on {{ prop.shortExpires }}
-                </v-card-subtitle>
-                <v-card-actions>
-                  <v-btn
-                    small
-                    :color="
-                      prop.support.includes(selfWalletPublicKey) ? 'grey' : ''
-                    "
-                    @click="setVote(prop, 'support')"
-                    ><v-icon>mdi-thumb-up</v-icon>
-                    <span>{{ prop.supportWeight }}%</span></v-btn
-                  >
-                  <v-btn
-                    small
-                    :color="
-                      prop.abstain.includes(selfWalletPublicKey) ? 'grey' : ''
-                    "
-                    @click="setVote(prop, 'abstain')"
-                    ><v-icon>mdi-emoticon-neutral</v-icon>
-                    <span>{{ prop.abstainWeight }}%</span></v-btn
-                  >
-                  <v-btn
-                    small
-                    :color="
-                      prop.against.includes(selfWalletPublicKey) ? 'grey' : ''
-                    "
-                    @click="setVote(prop, 'against')"
-                    ><v-icon>mdi-thumb-down</v-icon>
-                    <span>{{ prop.againstWeight }}%</span></v-btn
-                  >
-                  <v-btn small @click="openProposal(prop)"
-                    ><v-icon>mdi-arrow-right</v-icon></v-btn
-                  >
-                </v-card-actions>
-              </v-card>
+              <VoteProposal :proposal="prop" :stakes="stakes" />
             </div>
           </template>
         </SearchCursor>
+      </v-col>
+    </v-row>
+    <v-row v-else-if="tabIndex == 1 && stakes">
+      <v-col :cols="12">
+        <SearchCursor ref="cursor" top :advance-cursor="getHistoryProposals">
+          <template v-slot:content="{ items }">
+            <div v-for="(prop, i) in items" :key="i" class="mb-2">
+              <VoteProposal :proposal="prop" :stakes="stakes" />
+            </div>
+          </template>
+        </SearchCursor>
+      </v-col>
+    </v-row>
+    <v-row v-else-if="tabIndex == 3 && singleProposal && stakes">
+      <v-col :cols="12">
+        <VoteProposal :proposal="singleProposal" :stakes="stakes" />
+      </v-col>
+      <v-col :cols="12">
+        <Thread
+          ref="thread"
+          v-model="posts"
+          :no-replies="true"
+          :encoded-id="encodedThreadId"
+          :username="threadUsername"
+        />
       </v-col>
     </v-row>
   </div>
@@ -108,26 +106,52 @@ import SearchCursor from "../components/SearchCursor";
 import ResultText from "../components/ResultText.vue";
 import { PostObject } from "../server/api/objects";
 import api from "../server/api";
-import { shortDateString, waitFor } from "../utility";
 import { KeyManager } from "../KeyManager";
+import VoteProposal from "../components/VoteProposal.vue";
+import Thread from "../components/Thread.vue";
+
+const ONE_VOTE_UNIT = 52559900;
 
 export default {
   name: "VotePage",
   components: {
     SearchCursor,
     ResultText,
+    VoteProposal,
+    Thread
   },
   mixins: [mixins.Common, mixins.Meta],
   props: {},
   data: () => ({
     tabIndex: 0,
-    url: "https://discussions.app/p/Mucan/3jlubsmqw18gc/winter-anime-2022-in-nutshell",
-    title: "Test proposal",
+    url: "",
+    title: "",
     resultText: "",
     stakes: null,
+    // --
+    singleProposal: null,
+    posts: [],
+    encodedThreadId: '',
+    threadUsername: ''
   }),
-  computed: {},
-  watch: {},
+  computed: {
+    votePower() {
+      let power = this.stakes[this.selfWalletPublicKey];
+      if (isNaN(power)) {
+        return 0;
+      }
+      power /= ONE_VOTE_UNIT;
+      return power.toFixed(4);
+    },
+  },
+  watch: {
+    tabIndex() {
+      if (this.$refs.cursor) this.$refs.cursor.resetCursor();
+    },
+    "$route.params.proposalId": async function () {
+      await this.setSingleProposal();
+    },
+  },
   async created() {
     const eosApi = await this.getEosioApi("EOS");
     const stakeAccounts = await eosApi.rpc.get_table_rows({
@@ -147,91 +171,69 @@ export default {
       ),
       {}
     );
-    console.log(this.stakes);
+
+    //console.log(this.selfWalletPublicKey);
+    //console.log(this.stakes[this.selfWalletPublicKey] / ONE_VOTE_UNIT);
   },
-  async mounted() {},
+  async mounted() {
+    await this.setSingleProposal();
+  },
   async beforeDestroy() {},
   methods: {
-    getPropPercents(prop) {
-      const allKeys = Array.from(
-        new Set([...prop.support, ...prop.abstain, ...prop.against])
-      );
+    async setSingleProposal() {
+      const proposalId = this.$route.params.proposalId;
+      if (!proposalId) {
+        this.singleProposal = null;
+        return;
+      }
 
-      const totalWeight = allKeys.reduce(
-        (sum, key) => sum + (this.stakes[key] ?? 0),
-        0
-      );
-      const supportWeight = Math.floor(
-        (prop.support.reduce((sum, key) => sum + (this.stakes[key] ?? 0), 0) /
-          totalWeight) *
-          100
-      );
-      const abstainWeight = Math.floor(
-        (prop.abstain.reduce((sum, key) => sum + (this.stakes[key] ?? 0), 0) /
-          totalWeight) *
-          100
-      );
-      const againstWeight = 100 - supportWeight - abstainWeight; //prop.against.reduce((sum, key) => sum + (this.stakes[key] ?? 0), 0) / totalWeight;
+      const [username, expires] = proposalId.split("-");
+      const proposal = await api.Search.getSingleProposal({
+        username,
+        expires,
+      });
 
-      return {
-        totalWeight,
-        supportWeight,
-        abstainWeight,
-        againstWeight,
-      };
+      if (!proposal) {
+        this.singleProposal = null;
+        return;
+      }
+
+      const post = new PostObject(await api.Search.getSinglePost({ id: proposal.postId }));
+
+      //console.log(`set single proposal`, proposal);
+      this.encodedThreadId = post.getEncodedId();
+      this.threadUsername = post.username;
+      this.singleProposal = proposal;
+      this.tabIndex = 3; // special tab
     },
     async getProposals({ cursorId: oldCursorId }) {
       const { cursorId, results } = await api.Search.getProposals({
         cursorId: oldCursorId,
       });
 
-      await waitFor(0, async () => this.stakes);
-      //console.log('Stakes OK');
-
       const mapped = results.map((n) => ({
         ...n,
-        ...this.getPropPercents(n),
-        shortExpires: shortDateString(new Date(n.expires)),
       }));
-
-      //console.log(mapped);
 
       return {
         cursorId,
         results: mapped,
       };
     },
-    async setVote(prop, type) {
-      const removeVote = (array) => {
-        const set = new Set(array);
-        set.delete(this.selfWalletPublicKey);
-        return Array.from(set);
-      };
-
-      prop.support = removeVote(prop.support);
-      prop.abstain = removeVote(prop.abstain);
-      prop.against = removeVote(prop.against);
-
-      prop[type].push(this.selfWalletPublicKey);
-
-      // commit to server
-      await api.Action.voteProposal({ 
-        identityPublicKey: this.selfIdentityPublicKey,
-        postId: prop.postId,
-        expires: prop.expires,
-        type
+    async getHistoryProposals({ cursorId: oldCursorId }) {
+      const { cursorId, results } = await api.Search.getProposals({
+        cursorId: oldCursorId,
+        history: true,
       });
 
-      Object.assign(prop, this.getPropPercents(prop));
-    },
-    async openProposal(prop) {
-      //console.log(this.selfIdentityPublicKey);
-      //console.log(this.selfWalletPublicKey);
+      const mapped = results.map((n) => ({
+        ...n,
+      }));
 
-      const post = new PostObject(
-        await api.Search.getSinglePost({ id: prop.postId })
-      );
-      this.openThread(post);
+      return {
+        cursorId,
+        results: mapped,
+      };
     },
     async createProposal() {
       // http://localhost:8080/p/Mucan/3jlubsmqw18gc/winter-anime-2022-in-nutshell

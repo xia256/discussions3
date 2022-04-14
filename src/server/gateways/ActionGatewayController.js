@@ -171,9 +171,9 @@ class ActionGatewayController extends BaseGatewayController {
         });
 
         const weight = (stakeAccounts?.rows?.length > 0) ? parseInt(stakeAccounts.rows[0].total_weight) : 0;
-        const MIN_WEIGHT = 52559900; // 1000 ATMOS @ 1y
+        const MIN_WEIGHT = 52559900 * 1; // 1000 ATMOS @ 1y
         if (weight < MIN_WEIGHT)
-            throw new Error(`You need to have a staking weight of at least 52559900 (i.e. 1000 ATMOS for 1 year)`);
+            throw new Error(`Insufficient stake weight, consider <a target="_blank" href="https://www.probit.com/app/exchange/ATMOS-BTC">purchasing</a> and staking ATMOS to create a proposal.`);
 
         return await this.lockAccount(async () => {
 
