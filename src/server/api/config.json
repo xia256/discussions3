@@ -4,9 +4,9 @@
   "logo": "https://cdn.novusphere.io/static/atmos2.png",
   "genesis": 1483246800000,
   "url": "https://discussions.app",
-  "rendertron": "http://localhost:3000/render",
+  "rendertron": "http://localhost:8010/render",
   "api": "/api/v1",
-  "salt": "",
+  "salt": "discussions3",
   "port": 5015,
   "globalModerators": [
     "PUB_K1_7RWM4YvxcUEhZfHozf8XVajgvfh8wvohoJS9vx8Hg1K15W8NGQ",
@@ -75,8 +75,8 @@
     ]
   },
   "mongodb": {
-    "connection": "",
-    "database": "",
+    "connection": "mongodb://localhost:27017",
+    "database": "discussions3",
     "collections": {
       "oauths": "oauths",
       "accounts": "accounts",
