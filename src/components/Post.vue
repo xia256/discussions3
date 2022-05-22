@@ -205,16 +205,6 @@
                     }}</span>
                   </v-btn>
 
-                  <!--Button added to quickly block an user.-->
-                  <v-btn
-                    text
-                    small
-                    dense
-                    class="pa-0"
-                    @click="blockAccount(post)">
-                    Block User
-                  </v-btn>
-                    
                   <div class="d-inline" :class="{ 'flex-grow-1': isMobile }" />
                   <!-- drop down menu (...) -->
                   <v-menu offset-y>
@@ -273,6 +263,17 @@
                               ? "Unflag NSFW"
                               : "Flag NSFW"
                           }}</span>
+                        </v-btn>
+                      </v-list-item>
+
+                      <v-list-item>
+                        <!--Button added to quickly block an user.-->
+                        <v-btn
+                          text
+                          block
+                          class="pa-0"
+                          @click="blockAccount(post)">
+                          Hide User
                         </v-btn>
                       </v-list-item>
                     </v-list>
