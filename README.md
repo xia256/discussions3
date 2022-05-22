@@ -24,3 +24,5 @@ You will then be able to access the local interface on http://localhost:8080/
 ## Server setup
 
 ...
+
+export NODE_OPTIONS=--openssl-legacy-provider

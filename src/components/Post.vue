@@ -204,6 +204,17 @@
                       post.totalLikes
                     }}</span>
                   </v-btn>
+
+                  <!--Button added to quickly block an user.-->
+                  <v-btn
+                    text
+                    small
+                    dense
+                    class="pa-0"
+                    @click="blockAccount(post)">
+                    Block User
+                  </v-btn>
+                    
                   <div class="d-inline" :class="{ 'flex-grow-1': isMobile }" />
                   <!-- drop down menu (...) -->
                   <v-menu offset-y>
@@ -521,6 +532,8 @@ export default {
     overrideBlock: false,
     maxShowReplies: 0,
     isEditing: false,
+    //Profile account data for user management in post.
+    profileAccount: null,
   }),
   computed: {
     isBlocked() {
@@ -752,6 +765,68 @@ export default {
         });
       });
     },
+    async blockAccount(spost) {
+      var username = spost.username;
+      this.profileAccount = await api.Search.getUserInfo({ username });
+
+      //console.log(this.profileAccount);
+      if (this.requireLoginDialog()) return;
+      if (this.waiting) return;
+
+      const blockPublicKey = this.profileAccount?.identityPublicKey;
+      if (!blockPublicKey) return;
+      
+
+      const identityKey = this.keyManager.keys['identity'];
+      if (this.profileAccount.identityPublicKey == identityKey.pub) return;
+
+      await this.wait(async () => {
+        const inverted = this.profileAccount.isBlocked ? false : true;
+
+        // be optimistic about this and set it before signing and api call
+        this.profileAccount.isBlocked = inverted;
+
+        var args = {
+          identityPublicKey: identityKey.pub,
+          blockPublicKey,
+          value: inverted,
+          nonce: Date.now(),
+        };
+
+        var commitment = await getActionCommitment({
+          name: "block",
+          ...args,
+        });
+        var signature = await identityKey.signText(commitment);
+
+        await api.Action.blockUser({
+          signature,
+          ...args,
+        });
+
+        //Ignore post for good measure.
+        args = {
+          identityPublicKey: identityKey.pub,
+          postId: spost.id,
+          value: inverted,
+          nonce: Date.now(),
+        };
+
+        commitment = await getActionCommitment({
+          name: "ignore-post",
+          ...args,
+        });
+        signature = await identityKey.signText(commitment);
+
+        await api.Action.ignorePost({
+          signature,
+          ...args,
+        });
+
+
+      });
+    },
+
     async likePost() {
       if (this.requireLoginDialog()) return;
       if (this.waiting) return;
