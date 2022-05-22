@@ -804,26 +804,6 @@ export default {
           ...args,
         });
 
-        //Ignore post for good measure.
-        args = {
-          identityPublicKey: identityKey.pub,
-          postId: spost.id,
-          value: inverted,
-          nonce: Date.now(),
-        };
-
-        commitment = await getActionCommitment({
-          name: "ignore-post",
-          ...args,
-        });
-        signature = await identityKey.signText(commitment);
-
-        await api.Action.ignorePost({
-          signature,
-          ...args,
-        });
-
-
       });
     },
 
