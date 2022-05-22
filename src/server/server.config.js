@@ -20,6 +20,7 @@ const config = {
         'PUB_K1_7RWM4YvxcUEhZfHozf8XVajgvfh8wvohoJS9vx8Hg1K15W8NGQ', // Novusphere_Paul
         'PUB_K1_5FcwE6haZZNNTR6zA3QcyAwJwJhk53s7UjZDch1c7QgyfhY3L7', // xia256
         'PUB_K1_6sYMyMHzHhGtfwjCcZkRaw3YK5ws8xoD6ke2DNUmnHT3e399hy', // Brian_Novusphere
+		'PUB_K1_7or9vMgihSgrrTdxn58npjcAgjCMYfbgq2zoNs1DSzqq232vFz', // FaustAlexander
     ],
     passport: {
         twitter: { consumerKey: '', consumerSecret: '' },

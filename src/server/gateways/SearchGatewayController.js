@@ -384,7 +384,24 @@ class SearchGatewayController extends BaseGatewayController {
                 parentId: ""
             };
 
-            const { posts, account, communities } = await this.getDBO({ account: this.account ? true : false });
+            const { posts, account, accounts, communities } = await this.getDBO({ account: this.account ? true : false });
+			
+			//
+			// 5/8/2022 -- apply site wide moderator block
+			//
+			let blocked = new Set(account?.blocked ?? []);
+			for (const moderatorPubKey of ServerConfig.globalModerators) {
+				// add in global moderator blocks
+				const moderator = await accounts.findOne({ identityPublicKey: moderatorPubKey });
+				if (moderator?.blocked) {
+					moderator.blocked.forEach(pk => blocked.add(pk));
+				}
+			}
+			
+			$match = {
+				...$match,
+				identityPublicKey: { $nin: Array.from(blocked) }
+            };
 
             if (account) {
                 if (accountFilter) {
@@ -406,7 +423,7 @@ class SearchGatewayController extends BaseGatewayController {
                     $match = {
                         $and: [
                             {
-                                identityPublicKey: { $nin: account.blocked ?? [] }
+                                identityPublicKey: { $nin: Array.from(blocked) }
                             },
                             {
                                 $or: [
@@ -419,18 +436,6 @@ class SearchGatewayController extends BaseGatewayController {
                             }
                         ]
                     }
-                }
-                else if (account.blocked) {
-
-                    // 
-                    // since account filter isn't true, this user is trying to explore new/popular content
-                    // - do not return any posts from people that have been blocked
-                    //
-
-                    $match = {
-                        ...$match,
-                        identityPublicKey: { $nin: account.blocked }
-                    };
                 }
             }
 
