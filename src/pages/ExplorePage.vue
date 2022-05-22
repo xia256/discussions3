@@ -91,6 +91,19 @@
               ref="cursor"
             />
           </v-tab-item>
+
+          <!--FAQ Page-->
+          <v-tab-item
+            v-if="tabExists('faq')"
+            :transition="false"
+            :reverse-transition="false"
+          >
+            <FAQ
+              v-if="tabName == 'faq'"
+              ref="cursor"
+            />
+          </v-tab-item>
+
         </v-tabs-items>
       </v-col>
     </v-row>
@@ -109,6 +122,7 @@ import PostScroller from "../components/PostScroller";
 import TagInfo from "../components/TagInfo";
 import ReccomendUsers from "../components/ReccomendUsers";
 import ReccomendCommunities from "../components/ReccomendCommunities";
+import FAQ from "../components/FAQ.vue";
 
 export default {
   name: "ExplorePage",
@@ -118,6 +132,7 @@ export default {
     TagInfo,
     ReccomendUsers,
     ReccomendCommunities,
+    FAQ,
   },
   mixins: [mixins.Common, mixins.Meta],
   props: {},
@@ -129,6 +144,7 @@ export default {
       trending: "mdi-pound",
       users: "mdi-account-multiple-plus",
       community: "mdi-account-group",
+      faq: "mdi-account-group"
     },
   }),
   computed: {
@@ -137,8 +153,8 @@ export default {
     },
     tabs() {
       if (this.isLoggedIn)
-        return ["feed", "popular", "trending", "users", "community"];
-      else return ["popular", "trending", "community"];
+        return ["feed", "popular", "trending", "users", "community", "faq"];
+      else return ["popular", "trending", "community", "faq"];
     },
   },
   watch: {
