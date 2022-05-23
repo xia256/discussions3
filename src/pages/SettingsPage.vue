@@ -52,6 +52,33 @@
         </template>
       </v-combobox>
     </v-col>
+
+    <!--Tool to setup Opt-In Moderators-->
+    <v-col :cols="12">
+      <v-combobox
+        hide-selected
+        label="Curators You're Subscribed to"
+        hint="Press Tab to add a new curator"
+        multiple
+        persistent-hint
+        small-chips
+        >
+        <template>
+          <v-chip
+            label
+            small
+            >
+            <span class="pr-2">Curator</span>
+            <v-icon
+              small
+              @click="selectCurator"
+              >
+              mdi-delete
+            </v-icon>
+          </v-chip>
+        </template>
+      </v-combobox>
+    </v-col>
   </v-row>
 </template>
 
@@ -96,6 +123,9 @@ export default {
     blockedTags() {
       this.updateSettings();
     },
+    selectCurator(){
+      console.log("Curator selected");
+    }
   },
   async created() {},
   async mounted() {
@@ -146,6 +176,9 @@ export default {
       console.log(`Saved`, result, settings);
       return result;
     },
+    async selectCurator(){
+      console.log("Curator selected as method");
+    }
   },
 };
 </script>
