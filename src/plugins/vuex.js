@@ -30,6 +30,7 @@ function getDefaultSettings(isLoggedIn) {
     return {
         allowNsfw: isLoggedIn ? true : false,
         blurNsfw: true,
+        blurAllPics: false,
         neutralEngagement: false,
         likeNotifications: true,
         blockedTags: []
@@ -116,9 +117,10 @@ export default new Vuex.Store({
             state.account.loggedIn = true;
 
             // settings
-            const { allowNsfw, blurNsfw, neutralEngagement, likeNotifications, blockedTags } = Object.assign(getDefaultSettings(true), account.settings ?? {});
+            const { allowNsfw, blurNsfw, blurAllPics, neutralEngagement, likeNotifications, blockedTags } = Object.assign(getDefaultSettings(true), account.settings ?? {});
             state.settings.allowNsfw = allowNsfw;
             state.settings.blurNsfw = blurNsfw;
+            state.settings.blurAllPics = blurAllPics;
             state.settings.neutralEngagement = neutralEngagement;
             state.settings.likeNotifications = likeNotifications;
             state.settings.blockedTags = blockedTags;

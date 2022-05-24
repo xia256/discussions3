@@ -15,6 +15,14 @@
         :label="`Blur NSFW`"
         :help="`Apply a blur filter overtop NSFW content`"
       />
+
+      <!--Allows to blur all pictures by default until clicked on.-->
+      <Switch2
+        v-model="blurAllPics"
+        :label="`Blur All Pictures by Default`"
+        :help="`Blurs all pictures by default until clicked on`"
+      />
+
       <Switch2
         v-model="neutralEngagement"
         :label="`Neutral Engagement`"
@@ -102,6 +110,7 @@ export default {
   data: () => ({
     allowNsfw: false,
     blurNsfw: true,
+    blurAllPics: false,
     neutralEngagement: false,
     likeNotifications: true,
     blockedTags: [],
@@ -112,6 +121,9 @@ export default {
       this.updateSettings();
     },
     blurNsfw() {
+      this.updateSettings();
+    },
+    blurAllPics(){
       this.updateSettings();
     },
     neutralEngagement() {
@@ -148,6 +160,7 @@ export default {
       const settings = this.settings;
       this.allowNsfw = settings.allowNsfw;
       this.blurNsfw = settings.blurNsfw;
+      this.blurAllPics = settings.blurAllPics;
       this.neutralEngagement = settings.neutralEngagement;
       this.likeNotifications = settings.likeNotifications ?? true;
       this.blockedTags = Array.from(settings.blockedTags ?? []);
@@ -157,6 +170,7 @@ export default {
     async updateSettings() {
       const allowNsfw = this.allowNsfw;
       const blurNsfw = this.blurNsfw;
+      const blurAllPics = this.blurAllPics;
       const neutralEngagement = this.neutralEngagement;
       const likeNotifications = this.likeNotifications;
 
@@ -170,6 +184,7 @@ export default {
       const settings = {
         allowNsfw,
         blurNsfw,
+        blurAllPics,
         neutralEngagement,
         likeNotifications,
         blockedTags,
