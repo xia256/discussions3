@@ -131,6 +131,9 @@
                       post.isNsfw && settings.blurNsfw
                         ? 'post__content--blur'
                         : '',
+                      settings.blurAllPics
+                      ? 'post__content--blur'
+                      : '',
                       isMobile ? 'pl-1' : '',
                     ]"
                     :html="post.content"
@@ -537,10 +540,19 @@ export default {
     profileAccount: null,
   }),
   computed: {
+    //Function to determine if a given post has an image inside.
+    hasImg() {
+      console.log("Has image");
+      return true;
+    },
     isBlocked() {
       if (this.overrideBlock) return 0;
 
       const post = this.post;
+      console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+      console.log("Post made at Post.vue().computed.post");
+      console.log(post);
+      console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
       if (!post) return 0;
       if (post.isIgnored) return 2;
       if (this.blocked.some((idpk) => post.identityPublicKey == idpk)) return 1;

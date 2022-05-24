@@ -68,6 +68,7 @@ class AccountGatewayController extends BaseGatewayController {
     async saveSettings({
         allowNsfw,
         blurNsfw,
+        blurAllPics,
         neutralEngagement,
         likeNotifications,
         blockedTags
@@ -85,6 +86,7 @@ class AccountGatewayController extends BaseGatewayController {
                     settings: {
                         allowNsfw,
                         blurNsfw,
+                        blurAllPics,
                         neutralEngagement,
                         likeNotifications,
                         blockedTags
