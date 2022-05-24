@@ -1,3 +1,8 @@
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+//              SearchGatewayController
+//Description: Takes care of retrieving posts from the
+//server.
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 import BaseGatewayController from "./BaseGatewayController";
 import ServerConfig from "../server.config";
 import { v4 as uuidv4 } from 'uuid';
@@ -12,6 +17,7 @@ class SearchGatewayController extends BaseGatewayController {
 
     constructor(client) {
         super(client);
+        console.log("Constructor called at SearchGatewayController");
     }
 
     async disposeCursor({ cursorId }) {
@@ -166,6 +172,7 @@ class SearchGatewayController extends BaseGatewayController {
         });
     }
 
+    //Gathers all the posts related to a hashtag.
     async getHashtagPosts({ cursorId, sort, hashtags, threadOnly }) {
         if (!Array.isArray(hashtags)) throw new Error(`Hashtags was not specified or is not an array`);
 
@@ -251,6 +258,7 @@ class SearchGatewayController extends BaseGatewayController {
         });
     }
 
+    //Retrieves all the posts on the Explore function.
     async getExploreTags({ cursorId }) {
         return await this.#consumeCursor(cursorId, SEARCH_RETURN_LIMIT, async () => {
             const { hashtags } = await this.getDBO();
@@ -376,6 +384,7 @@ class SearchGatewayController extends BaseGatewayController {
         });
     }
 
+    //Retrieves posts from the user feed.
     async getFeedPosts({ cursorId, sort, accountFilter }) {
         return await this.#consumeCursor(cursorId, SEARCH_RETURN_LIMIT, async () => {
 

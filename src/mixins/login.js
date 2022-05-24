@@ -11,7 +11,7 @@ export default {
 
             if (!identityKey) return null;
 
-            console.log(`Attempting login as ${identityKey.pub}`);
+            //console.log(`Attempting login as ${identityKey.pub}`);
 
             let account = undefined;
             try {
@@ -31,7 +31,7 @@ export default {
             this.$store.commit('set', ['keyManager', keyManager]);
             this.$store.commit('setAccount', account);
 
-            console.log(`Logged in as ${identityKey.pub} ${account.username}`);
+            //console.log(`Logged in as ${identityKey.pub} ${account.username}`);
 
             return { nonce, account, keyManager };
         },

@@ -26,5 +26,11 @@ export default class Account {
         this.#username = dboAccount.username;
         this.#usernameLower = dboAccount.usernameLower;
         this.#mutex = Account.#getOrCreateMutex(dboAccount.identityPublicKey);
+        //TO DEBUG:
+//        console.log("USER ACCOUNT DATA");
+//        console.log(this.#username);
+//        console.log(this.usernameLower);
+//        console.log(this.#mutex);
+//        console.log("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
     }
 }

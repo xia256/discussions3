@@ -133,6 +133,11 @@ export default {
       title: `Settings - ${ServerConfig.name}`,
     });
 
+    console.log("This:");
+    console.log(this);
+    console.log("Api:");
+    console.log(api);
+
     this.setSettings();
   },
   async beforeDestroy() {},
@@ -147,7 +152,7 @@ export default {
       this.likeNotifications = settings.likeNotifications ?? true;
       this.blockedTags = Array.from(settings.blockedTags ?? []);
 
-      console.log(settings.blockedTags);
+      //console.log(settings.blockedTags);
     },
     async updateSettings() {
       const allowNsfw = this.allowNsfw;
@@ -173,7 +178,7 @@ export default {
       this.$store.commit("set", ["settings", settings]);
 
       const result = await api.Account.saveSettings(settings);
-      console.log(`Saved`, result, settings);
+      //console.log(`Saved`, result, settings);
       return result;
     },
     async selectCurator(){

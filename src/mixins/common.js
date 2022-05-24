@@ -34,6 +34,7 @@ export default {
             const walletKey = this.keyManager.keys['wallet'];
             return walletKey?.pub;
         },
+        //Function to detect if the user is a global moderator.
         isGlobalModerator() {
             return this.selfIdentityPublicKey ? ServerConfig.globalModerators.includes(this.selfIdentityPublicKey) : false;
         },
@@ -199,6 +200,17 @@ export default {
             }
             return false;
         },
+        //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        //                          MODERATION TOOLS
+        //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+        subscribe2Mod(){
+
+        },
+        unsubscribe2Mod(){
+
+        },
+        
+        //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
         //
         // cryptocurrency common
         //

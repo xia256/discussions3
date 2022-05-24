@@ -1,3 +1,8 @@
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+//                 ActionGatewayController
+//Description: The goal of this controller is to provide user
+//interaction such as liking posts, comments, blocking, etc.
+//%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 import BaseGatewayController from "./BaseGatewayController";
 //import Account from "./Account";
 import { KeyManager } from "../../KeyManager";
@@ -380,6 +385,7 @@ class ActionGatewayController extends BaseGatewayController {
         return true;
     }
 
+    //Function to generate a new post.
     async createPost({ id, identityPublicKey, signature, content, parentId, threadId, community, hashtags, mentions, nonce, transfers }) {
         this.requireIdentity(identityPublicKey);
         this.validateUUID(id);
