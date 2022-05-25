@@ -145,10 +145,10 @@ export default {
       title: `Settings - ${ServerConfig.name}`,
     });
 
-    console.log("This:");
-    console.log(this);
-    console.log("Api:");
-    console.log(api);
+//    console.log("This:");
+//    console.log(this);
+//    console.log("Api:");
+//    console.log(api);
 
     this.setSettings();
   },
